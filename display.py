@@ -1,7 +1,7 @@
 import pygame
 import os
 from util import Util
-import time #remove
+import time
 
 class Display():
 
@@ -219,24 +219,51 @@ class Display():
     def refreshDisplay(self):
         pygame.display.update()
 
-    def setupOptionsDisplay(self):
-        pygame.mouse.set_visible(False)
-        self.__lcd.fill(self.__black)
-
+    def displayOptionsTitle(self):
         pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
         txt = self.__titleFont.render('ads-b scanner - ' + u'\N{COPYRIGHT SIGN}' + ' Erik Orange', 1, self.__yellow)
         self.__lcd.blit(txt, ((self.__displayWidth - txt.get_width())/2, 0))
-        
-        baseY=50
 
+    def displayOptionsLabels(self, baseY):
         lblX=14
         labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+30), ("Remote:", lblX, baseY+60)]
         for lbl in labels:
             txt = self.__optsFont.render(lbl[0], 1, self.__white)
             self.__lcd.blit(txt, (lbl[1], lbl[2]))
 
+    def drawOptionsButtons(self):
+        txt = self.__titleFont.render(u'\N{DOWNWARDS ARROW}', 1, self.__green)
+        self.__lcd.blit(txt, (302, 37))
+
+        txt = self.__titleFont.render(u'\N{WHITE UP-POINTING TRIANGLE}', 1, self.__green)
+        self.__lcd.blit(txt, (302, 96))
+
+        txt = self.__titleFont.render(u'\N{LEFTWARDS ARROW}', 1, self.__green)
+        self.__lcd.blit(txt, (302, 220))
+
+    def drawOptionPointer(self, posX, posY, visible):
+        if (visible):
+            color = self.__green
+        else:
+            color = self.__black
+
+        pygame.draw.polygon(self.__lcd, color, [(posX, posY), (posX-7, posY-5), (posX-7, posY+5), (posX, posY)], 0)
+            
+
+
+
+    def setupOptionsDisplay(self):
+        pygame.mouse.set_visible(False)
+        self.__lcd.fill(self.__black)
+
+        self.displayOptionsTitle()
+
+        baseY=50
+        self.displayOptionsLabels(baseY)
+        self.drawOptionsButtons()
+
         mode = ['Military', 'Military + Civilian'] 
-        tweet = ['None', 'Military', 'Military + Civilian']
+        tweet = ['None', 'Last 10 Recent', 'Military Only', 'Everything']
         remote = ['Disable', 'Enable']
 
         modeIdx = 1
@@ -255,6 +282,28 @@ class Display():
         arY=baseY+8
         arcoords=[(arX, arY), (arX, arY+30), (arX,arY+60)]
         
+        BUTTON_DOWN = 17
+        BUTTON_CHANGE= 22
+        BUTTON_QUIT = 27
+
+        optionIdx=0
+        exitFlag=False
+        self.drawOptionPointer(arcoords[optionIdx][0], arcoords[optionIdx][1], True)
+        self.refreshDisplay()
+        while (not exitFlag):
+            if Util.isButtonPressed(BUTTON_DOWN):
+                self.drawOptionPointer(arcoords[optionIdx][0], arcoords[optionIdx][1], False)
+                optionIdx+=1
+                if (optionIdx == len(arcoords)):
+                    optionIdx = 0
+                
+                self.drawOptionPointer(arcoords[optionIdx][0], arcoords[optionIdx][1], True)
+                self.refreshDisplay()
+                time.sleep(0.25)
+
+
+
+
         while True:
             for c in arcoords:
                 posX, posY = c
