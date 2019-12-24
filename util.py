@@ -1,8 +1,16 @@
 import re
 import os
 from math import degrees, radians, cos, sin, asin, sqrt, atan2
+import RPi.GPIO as GPIO
 
 class Util:
+
+    @staticmethod
+    def isButtonPressed(button):
+        if not(GPIO.input(button)):
+            return 1
+        else:
+            return 0
 
     @staticmethod
     def getCPUTemp():
