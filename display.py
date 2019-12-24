@@ -1,6 +1,7 @@
 import pygame
 import os
 from util import Util
+import time #remove
 
 class Display():
 
@@ -12,7 +13,6 @@ class Display():
         self.__initDisplay()
         self.__initFonts()
         self.__initColors()
-        self.__setupDisplay()
     
     def __initDisplay(self):
         os.putenv('SDL_FBDEV', '/dev/fb1')
@@ -29,6 +29,9 @@ class Display():
         self.__btnFont = pygame.font.Font(fontDir + "FreeSans.ttf", 13)
         self.__recentFont= pygame.font.Font(fontDir + "FreeSans.ttf", 13)
         self.__statsFont= pygame.font.Font(fontDir + "FreeSans.ttf", 14)
+        self.__optsFont = pygame.font.Font(fontDir + "FreeMono.ttf", 17)
+        self.__titleFont= pygame.font.Font(fontDir + "FreeSans.ttf", 18)
+
 
     def __initColors(self):
         self.__green = (0,255,0)
@@ -45,7 +48,7 @@ class Display():
         self.__white = (255,255,255)
         self.__gray = (128,128,128)
 
-    def __setupDisplay(self):
+    def setupAdsbDisplay(self):
         pygame.mouse.set_visible(False)
         self.__lcd.fill(self.__black)
         pygame.draw.rect(self.__lcd, self.__green, (0,0,self.__screenWidth, self.__screenHeight), 1) # screen border
@@ -213,6 +216,52 @@ class Display():
         txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__mediumBlue)
         self.__lcd.blit(txt, (xpos, ypos+75))
 
-        
     def refreshDisplay(self):
         pygame.display.update()
+
+    def setupOptionsDisplay(self):
+        pygame.mouse.set_visible(False)
+        self.__lcd.fill(self.__black)
+
+        pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
+        txt = self.__titleFont.render('ads-b scanner - ' + u'\N{COPYRIGHT SIGN}' + ' Erik Orange', 1, self.__yellow)
+        self.__lcd.blit(txt, ((self.__displayWidth - txt.get_width())/2, 0))
+        
+        baseY=50
+
+        lblX=14
+        labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+30), ("Remote:", lblX, baseY+60)]
+        for lbl in labels:
+            txt = self.__optsFont.render(lbl[0], 1, self.__white)
+            self.__lcd.blit(txt, (lbl[1], lbl[2]))
+
+        mode = ['Military', 'Military + Civilian'] 
+        tweet = ['None', 'Military', 'Military + Civilian']
+        remote = ['Disable', 'Enable']
+
+        modeIdx = 1
+        tweetIdx = 2
+        remoteIdx = 0
+
+        valX=87
+        txt = self.__optsFont.render(mode[modeIdx], 1, self.__cyan)
+        self.__lcd.blit(txt, (valX, baseY))
+        txt = self.__optsFont.render(tweet[tweetIdx], 1, self.__cyan)
+        self.__lcd.blit(txt, (valX, baseY+30))
+        txt = self.__optsFont.render(remote[remoteIdx], 1, self.__cyan)
+        self.__lcd.blit(txt, (valX, baseY+60))
+
+        arX=9
+        arY=baseY+8
+        arcoords=[(arX, arY), (arX, arY+30), (arX,arY+60)]
+        
+        while True:
+            for c in arcoords:
+                posX, posY = c
+                pygame.draw.polygon(self.__lcd, self.__green, [(posX, posY), (posX-7, posY-5), (posX-7, posY+5), (posX, posY)], 0)
+                time.sleep(1)
+                pygame.display.update()
+                pygame.draw.polygon(self.__lcd, self.__black, [(posX, posY), (posX-7, posY-5), (posX-7, posY+5), (posX, posY)], 0)
+        
+
+    

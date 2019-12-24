@@ -99,18 +99,25 @@ recentCount = 0
 firstRow = 1
 adsbCount = 0
 holdMode = False
-milMode = False
 currentCallsign = ""
 currentID = ""
-tweetRecents = True
+
+# Setup page options
+milMode = False
+tweetCivAndMil = True
 tweetMil = True
 
 
 dsp = Display()
 adsbObj = Adsb()
-tweeter = Tweet()
+tweeter = Tweet()   # make conditional if tweets not enabled
 
 setupButtonHardware()
+
+dsp.setupOptionsDisplay()
+
+dsp.setupAdsbDisplay()
+
 dsp.drawHoldButton(holdMode)
 dsp.drawMilButton(milMode)
 dsp.drawOffButton()
@@ -147,7 +154,7 @@ for adsbdata in sys.stdin:
                 recentCallsigns, recentCount = addToRecents(currentCallsign, recentCallsigns, recentCount)
                 dsp.displayRecents(recentCallsigns)
 
-                if (tweetRecents):
+                if (tweetCivAndMil):
                     if (recentCount == 10):
                         recentCount = 0
                         msg = ""
