@@ -23,12 +23,6 @@ def setupButtonHardware():
     GPIO.setup(BUTTON_MIL, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BUTTON_QUIT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-def isButtonPressed(button):
-    if not(GPIO.input(button)):
-        return 1
-    else:
-        return 0
-
 def shutdownEvent(signal, frame):
     sys.exit(0)
 
@@ -104,7 +98,7 @@ currentID = ""
 
 # Setup page options
 milMode = False
-tweetCivAndMil = True
+tweetAllRecent = True
 tweetMil = True
 
 
@@ -114,7 +108,12 @@ tweeter = Tweet()   # make conditional if tweets not enabled
 
 setupButtonHardware()
 
+# Get initial options
 dsp.setupOptionsDisplay()
+
+
+
+
 
 dsp.setupAdsbDisplay()
 
@@ -150,11 +149,17 @@ for adsbdata in sys.stdin:
         # update just the recent callsign display and the logged callsigns if new
         currentCallsign = adsbObj.callsign.strip()
         if (currentCallsign != ""):
+
+            # Mil callsign:     if not mil mode, then display, add to recents, tweet if enabled
+            #                   if mil mode, then do the same
+            #
+            # Civ callsign:     if not mil mode, then display, add to recents, tweet if enabled
+            #                   if mil mode, then discard, no tweet
             if (not milMode or (milMode and Util.isMilCallsign(currentCallsign))):
                 recentCallsigns, recentCount = addToRecents(currentCallsign, recentCallsigns, recentCount)
                 dsp.displayRecents(recentCallsigns)
 
-                if (tweetCivAndMil):
+                if (tweetAllRecent):
                     if (recentCount == 10):
                         recentCount = 0
                         msg = ""
@@ -216,7 +221,7 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if (tweeter.tweetCount % 5 == 0):
+        if (tweeter.tweetCount % 5 == 0):           # change if tweet and adsb count %50000
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
@@ -226,21 +231,21 @@ for adsbdata in sys.stdin:
             tweeter.sendTweet(status)
 
 
-    if (isButtonPressed(BUTTON_HOLD) and holdMode == False):
+    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == False):
         holdMode = True
         dsp.drawHoldButton(holdMode)
         adsbObj.clearLastFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (isButtonPressed(BUTTON_HOLD) and holdMode == True):
+    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == True):
         holdMode = False
         dsp.drawHoldButton(holdMode)
         dsp.refreshDisplay()
         adsbObj.clearLastCallsignID()
         time.sleep(1)
 
-    if (isButtonPressed(BUTTON_MIL) and milMode == False):
+    if (Util.isButtonPressed(BUTTON_MIL) and milMode == False):
         milMode = True
         dsp.drawMilButton(milMode)
         dsp.clearCallsignAndID()
@@ -248,11 +253,11 @@ for adsbdata in sys.stdin:
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (isButtonPressed(BUTTON_MIL) and milMode == True):
+    if (Util.isButtonPressed(BUTTON_MIL) and milMode == True):
         milMode = False
         dsp.drawMilButton(milMode)
         dsp.refreshDisplay()
         time.sleep(1)
       
-    if (isButtonPressed(BUTTON_QUIT)):
+    if (Util.isButtonPressed(BUTTON_QUIT)):
         sys.exit(0)
