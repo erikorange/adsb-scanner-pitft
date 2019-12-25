@@ -29,7 +29,7 @@ class Display():
         self.__btnFont = pygame.font.Font(fontDir + "FreeSans.ttf", 13)
         self.__recentFont= pygame.font.Font(fontDir + "FreeSans.ttf", 13)
         self.__statsFont= pygame.font.Font(fontDir + "FreeSans.ttf", 14)
-        self.__optsFont = pygame.font.Font(fontDir + "FreeMono.ttf", 17)
+        self.__optsFont = pygame.font.Font(fontDir + "FreeSans.ttf", 17)
         self.__titleFont= pygame.font.Font(fontDir + "FreeSans.ttf", 18)
 
 
@@ -226,9 +226,9 @@ class Display():
 
     def displayOptionsLabels(self, baseY):
         lblX=14
-        labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+30), ("Remote:", lblX, baseY+60)]
+        labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+40), ("Remote:", lblX, baseY+80)]
         for lbl in labels:
-            txt = self.__optsFont.render(lbl[0], 1, self.__white)
+            txt = self.__optsFont.render(lbl[0], 1, self.__cyan)
             self.__lcd.blit(txt, (lbl[1], lbl[2]))
 
     def drawOptionsButtons(self):
@@ -262,25 +262,29 @@ class Display():
         self.displayOptionsLabels(baseY)
         self.drawOptionsButtons()
 
-        mode = ['Military', 'Military + Civilian'] 
-        tweet = ['None', 'Last 10 Recent', 'Military Only', 'Everything']
-        remote = ['Disable', 'Enable']
+        options = [ ('Military', 'Military + Civilian'),
+                    ('None', 'Last 10 Recent', 'Military Only', 'Everything'),
+                    ('Disable', 'Enable')]
 
-        modeIdx = 1
-        tweetIdx = 2
+        modeT = 0
+        tweetT = 1
+        remoteT = 2
+
+        modeIdx = 0
+        tweetIdx = 0
         remoteIdx = 0
 
         valX=87
-        txt = self.__optsFont.render(mode[modeIdx], 1, self.__cyan)
+        txt = self.__optsFont.render(options[modeT][modeIdx], 1, self.__medOrange)
         self.__lcd.blit(txt, (valX, baseY))
-        txt = self.__optsFont.render(tweet[tweetIdx], 1, self.__cyan)
-        self.__lcd.blit(txt, (valX, baseY+30))
-        txt = self.__optsFont.render(remote[remoteIdx], 1, self.__cyan)
-        self.__lcd.blit(txt, (valX, baseY+60))
+        txt = self.__optsFont.render(options[tweetT][tweetIdx], 1, self.__medOrange)
+        self.__lcd.blit(txt, (valX, baseY+40))
+        txt = self.__optsFont.render(options[remoteT][remoteIdx], 1, self.__medOrange)
+        self.__lcd.blit(txt, (valX, baseY+80))
 
         arX=9
         arY=baseY+8
-        arcoords=[(arX, arY), (arX, arY+30), (arX,arY+60)]
+        arcoords=[(arX, arY), (arX, arY+40), (arX,arY+80)]
         
         BUTTON_DOWN = 17
         BUTTON_CHANGE= 22
@@ -300,8 +304,40 @@ class Display():
                 self.drawOptionPointer(arcoords[optionIdx][0], arcoords[optionIdx][1], True)
                 self.refreshDisplay()
                 time.sleep(0.25)
+            
+            if Util.isButtonPressed(BUTTON_CHANGE):
+                if (optionIdx == 0):
+                    txt = self.__optsFont.render(options[modeT][modeIdx], 1, self.__black)
+                    pygame.draw.rect(self.__lcd, self.__black, txt.get_rect(topleft=(valX,baseY)))
+                    modeIdx+=1
+                    if (modeIdx == len(options[modeT])):
+                        modeIdx = 0
 
+                    txt = self.__optsFont.render(options[modeT][modeIdx], 1, self.__medOrange)
+                    self.__lcd.blit(txt, (valX, baseY))
 
+                elif (optionIdx == 1):
+                    txt = self.__optsFont.render(options[tweetT][tweetIdx], 1, self.__black)
+                    pygame.draw.rect(self.__lcd, self.__black, txt.get_rect(topleft=(valX,baseY+40)))
+                    tweetIdx+=1
+                    if (tweetIdx == len(options[tweetT])):
+                        tweetIdx = 0
+
+                    txt = self.__optsFont.render(options[tweetT][tweetIdx], 1, self.__medOrange)
+                    self.__lcd.blit(txt, (valX, baseY+40))
+
+                elif (optionIdx == 2):
+                    txt = self.__optsFont.render(options[remoteT][remoteIdx], 1, self.__black)
+                    pygame.draw.rect(self.__lcd, self.__black, txt.get_rect(topleft=(valX,baseY+80)))
+                    remoteIdx+=1
+                    if (remoteIdx == len(options[remoteT])):
+                        remoteIdx = 0
+
+                    txt = self.__optsFont.render(options[remoteT][remoteIdx], 1, self.__medOrange)
+                    self.__lcd.blit(txt, (valX, baseY+80))
+
+                self.refreshDisplay()
+                time.sleep(0.25)
 
 
         while True:
