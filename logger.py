@@ -77,13 +77,17 @@ def getHomeLatLon(filename):
     f.close()
     return lat, lon
 
+Util.timestamp('ads-b scanner starting')
 
+Util.timestamp('registering signals')
 signal.signal(signal.SIGTERM, shutdownEvent)
 signal.signal(signal.SIGINT, shutdownEvent)
 signal.signal(signal.SIGTSTP, shutdownEvent)
 
+Util.timestamp('getting lat/lon')
 HOME_LAT, HOME_LON = getHomeLatLon("home-lat-lon.txt")
 
+Util.timestamp('defining data structures')
 loggedCivCallsigns = set()
 loggedMilCallsigns = set()
 csCivCount = 0
@@ -100,19 +104,19 @@ currentID = ""
 milMode = False
 tweetAllRecent = True
 tweetMil = True
+remoteHead = False
 
-
+Util.timestamp('creating objects')
 dsp = Display()
 adsbObj = Adsb()
 tweeter = Tweet()   # make conditional if tweets not enabled
 
+Util.timestamp('configuring GPIO')
 setupButtonHardware()
 
+Util.timestamp('starting GUI')
 # Get initial options
 dsp.setupOptionsDisplay()
-
-
-
 
 
 dsp.setupAdsbDisplay()
@@ -221,7 +225,7 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if (tweeter.tweetCount % 5 == 0):           # change if tweet and adsb count %50000
+        if (tweeter.tweetCount % 5 == 0):           # change if tweet and adsb count %50000; still need tweetCount?
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
