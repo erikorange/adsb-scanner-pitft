@@ -2,8 +2,13 @@ import re
 import os
 from math import degrees, radians, cos, sin, asin, sqrt, atan2
 import RPi.GPIO as GPIO
+from datetime import datetime
 
 class Util:
+
+    @staticmethod
+    def timestamp(txt):
+        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ' ' + txt)
 
     @staticmethod
     def isButtonPressed(button):
