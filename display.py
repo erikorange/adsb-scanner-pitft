@@ -2,6 +2,7 @@ import pygame
 import os
 from util import Util
 import time
+import datetime
 
 class Display():
 
@@ -47,6 +48,7 @@ class Display():
         self.__darkOrange=(128,60,0)
         self.__white = (255,255,255)
         self.__gray = (128,128,128)
+        self.__red = (255,0,0)
 
     def setupAdsbDisplay(self):
         pygame.mouse.set_visible(False)
@@ -291,11 +293,37 @@ class Display():
         arCoords=[(arX, arY), (arX, arY+40), (arX,arY+80)]
         arIdx=0
         self.drawOptionPointer(arCoords[arIdx][0], arCoords[arIdx][1], True)
-
         self.refreshDisplay()
 
         exitFlag=False
+        totalSeconds=10
+        currentSeconds=totalSeconds
+
+        timeTxt = self.__optsFont.render(str(currentSeconds), 1, self.__yellow)
+        timeTxtPos = (5,220)
+        self.__lcd.blit(timeTxt, timeTxtPos)
+        self.refreshDisplay()
+        
+        startTime=datetime.datetime.now()
         while (not exitFlag):
+            endTime=datetime.datetime.now()
+            elapsedSeconds=(endTime-startTime).seconds
+            if (elapsedSeconds >= 1):
+                currentSeconds-=1
+                pygame.draw.rect(self.__lcd, self.__black, timeTxt.get_rect(topleft=timeTxtPos))
+                if (currentSeconds <= 3):
+                    timeColor = self.__red
+                else:
+                    timeColor = self.__yellow
+
+                timeTxt = self.__optsFont.render(str(currentSeconds), 1, timeColor)
+                self.__lcd.blit(timeTxt, timeTxtPos)
+                self.refreshDisplay()
+                startTime=datetime.datetime.now()
+            
+            if (currentSeconds == 0):
+                exitFlag = True
+
             if Util.isButtonPressed(BUTTON_DOWN):
                 self.drawOptionPointer(arCoords[arIdx][0], arCoords[arIdx][1], False)
                 arIdx+=1
@@ -304,6 +332,7 @@ class Display():
                 
                 self.drawOptionPointer(arCoords[arIdx][0], arCoords[arIdx][1], True)
                 self.refreshDisplay()
+                currentSeconds=totalSeconds+1
                 time.sleep(0.25)
             
             if Util.isButtonPressed(BUTTON_CHANGE):
@@ -338,6 +367,7 @@ class Display():
                     self.__lcd.blit(txt, (valX, baseY+80))
 
                 self.refreshDisplay()
+                currentSeconds=totalSeconds+1
                 time.sleep(0.25)
 
             if Util.isButtonPressed(BUTTON_QUIT):
