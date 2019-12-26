@@ -240,7 +240,7 @@ for adsbdata in sys.stdin:
             adsbCnt = "{:,}".format(adsbCount)
             cpuTemp = Util.getCPUTemp() + u'\N{DEGREE SIGN}'
             uptime = Util.getUptime()
-            status = "civ:" + civCnt + " mil:" + milCnt + " adsb:" + adsbCnt + " cpu temp:" + cpuTemp + " uptime:" + uptime
+            status = "civ:" + civCnt + " mil:" + milCnt + " adsb:" + adsbCnt + " cpu temp:" + cpuTemp + " " + uptime
             tweeter.sendTweet(status)
 
 
