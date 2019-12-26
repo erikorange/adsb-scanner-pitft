@@ -121,6 +121,13 @@ dsp.drawExitButton()
 
 checkAndMakeDir(LOG_DIR)
 
+milTestMode=False
+
+if (milTestMode):
+    milTestList=('VADER07', 'STING42', 'POLO57', 'STEEL98', 'BISON22', 'RULE71', 'JEEP31', 'RCH285', 'SLAM90', 'FLASH29')
+    milTestIdx=0
+
+
 for adsbdata in sys.stdin:
 
     if adsbObj.isValidRec(adsbdata):
@@ -145,6 +152,15 @@ for adsbdata in sys.stdin:
 
         # update just the recent callsign display and the logged callsigns if new
         currentCallsign = adsbObj.callsign.strip()
+
+        if (milTestMode):
+            if (adsbCount % 500 == 0):
+                currentCallsign = milTestList[milTestIdx]
+                milTestIdx+=1
+                if (milTestIdx == len(milTestList)):
+                    milTestIdx=0
+
+
         if (currentCallsign != ""):
 
             # Mil callsign:     if not mil mode, then display, add to recents, tweet if enabled
@@ -218,7 +234,7 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if ((adsbCount % 50000 == 0) and (tweetLast10CivMil or tweetMil)):
+        if ((adsbCount % 10000 == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
@@ -258,3 +274,5 @@ for adsbdata in sys.stdin:
       
     if (Util.isButtonPressed(BUTTON_QUIT)):
         sys.exit(0)
+
+print("Exiting main loop")
