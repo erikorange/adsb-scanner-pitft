@@ -100,27 +100,20 @@ holdMode = False
 currentCallsign = ""
 currentID = ""
 
-# Setup page options
-milMode = False
-tweetAllRecent = True
-tweetMil = True
-remoteHead = False
-
 Util.timestamp('creating objects')
 dsp = Display()
 adsbObj = Adsb()
-tweeter = Tweet()   # make conditional if tweets not enabled
 
 Util.timestamp('configuring GPIO')
 setupButtonHardware()
 
 Util.timestamp('starting GUI')
-# Get initial options
-dsp.setupOptionsDisplay()
+milMode, tweetMil, tweetLast10CivMil, remoteHead = dsp.setupOptionsDisplay()    # Get initial options
+if (tweetMil or tweetLast10CivMil):
+    tweeter = Tweet()
 
 
 dsp.setupAdsbDisplay()
-
 dsp.drawHoldButton(holdMode)
 dsp.drawMilButton(milMode)
 dsp.drawOffButton()
@@ -163,7 +156,7 @@ for adsbdata in sys.stdin:
                 recentCallsigns, recentCount = addToRecents(currentCallsign, recentCallsigns, recentCount)
                 dsp.displayRecents(recentCallsigns)
 
-                if (tweetAllRecent):
+                if (tweetLast10CivMil):
                     if (recentCount == 10):
                         recentCount = 0
                         msg = ""
@@ -225,7 +218,7 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if (tweeter.tweetCount % 5 == 0):           # change if tweet and adsb count %50000; still need tweetCount?
+        if ((adsbCount % 50000 == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
