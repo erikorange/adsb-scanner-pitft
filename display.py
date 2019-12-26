@@ -263,7 +263,7 @@ class Display():
         self.drawOptionsButtons()
 
         options = [ ('Military', 'Military + Civilian'),
-                    ('Nothing', 'Military Only', 'Every 10 Civ + Mil', 'Everything'),
+                    ('Disable', 'Military Only', 'Last 10 Civ + Mil', 'Both'),
                     ('Disable', 'Enable')]
 
         # order of line item options in tuple
@@ -339,6 +339,38 @@ class Display():
 
                 self.refreshDisplay()
                 time.sleep(0.25)
+
+            if Util.isButtonPressed(BUTTON_QUIT):
+                exitFlag=True
+                time.sleep(0.25)
+
+        # determine final options            
+        if (modeIdx == 0):
+            milMode = True
+        else:
+            milMode = False
+        
+        if (tweetIdx == 0):
+            tweetLast10CivMil = False
+            tweetMil = False
+        elif (tweetIdx == 1):
+            tweetLast10CivMil = False
+            tweetMil = True
+        elif (tweetIdx == 2):
+            tweetLast10CivMil = True
+            tweetMil = False
+        else:
+            tweetLast10CivMil = True
+            tweetMil = True
+
+        if (remoteIdx == 0):
+            remoteHead = False
+        else:
+            remoteHead = True
+    
+        return milMode, tweetMil, tweetLast10CivMil, remoteHead
+        
+
 
 
     
