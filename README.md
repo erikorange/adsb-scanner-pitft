@@ -16,7 +16,7 @@ API key for twitter notifications:
 - access_token_secret
 
 ### home-lat-lon.txt
-The home lat and lot of the device:
+The home lat and lon of the device:
 - lat
 - lon
 
