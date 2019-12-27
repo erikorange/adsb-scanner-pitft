@@ -119,6 +119,9 @@ dsp.drawMilButton(milMode)
 dsp.drawOffButton()
 dsp.drawExitButton()
 
+if (tweetMil or tweetLast10CivMil):
+    dsp.drawTwitterLogo(4, 5)
+
 checkAndMakeDir(LOG_DIR)
 
 milTestMode=False

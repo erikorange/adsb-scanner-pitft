@@ -221,6 +221,20 @@ class Display():
     def refreshDisplay(self):
         pygame.display.update()
 
+    def drawTwitterLogo(self, x, y):
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x,y), (x,y+2)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+1,y+1), (x,y+4)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+1,y+6), (x+1,y+6)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+2,y+2), (x+2,y+6)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+3,y+1), (x+3,y+6)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+4,y), (x+4,y+6)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+5,y-1), (x+5,y+4)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+6,y-2), (x+5,y+4)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+7,y-1), (x+7,y+2)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+8,y-1), (x+8,y)], 1)
+        pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+9,y-1), (x+9,y-1)], 1)
+        self.refreshDisplay()
+
     def displayOptionsTitle(self):
         pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
         txt = self.__titleFont.render('ads-b scanner - ' + u'\N{COPYRIGHT SIGN}' + ' Erik Orange', 1, self.__yellow)
