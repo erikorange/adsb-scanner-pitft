@@ -222,7 +222,7 @@ class Display():
         pygame.display.update()
 
     def displayTwitterLogo(self):
-        image = pygame.image.load(r'twitterlogo.png')
+        image = pygame.image.load(r'twitter-logo.png')
         self.__lcd.blit(image, (self.__screenWidth+1, 0)) 
 
     def displayOptionsTitle(self):
