@@ -18,6 +18,7 @@ class Display():
     def __initDisplay(self):
         os.putenv('SDL_FBDEV', '/dev/fb1')
         pygame.init()
+        pygame.mouse.set_visible(False)
         self.__lcd = pygame.display.set_mode((self.__displayWidth, self.__screenHeight))
 
     def __initFonts(self):
@@ -51,7 +52,6 @@ class Display():
         self.__red = (255,0,0)
 
     def setupAdsbDisplay(self):
-        pygame.mouse.set_visible(False)
         self.__lcd.fill(self.__black)
         pygame.draw.rect(self.__lcd, self.__green, (0,0,self.__screenWidth, self.__screenHeight), 1) # screen border
         pygame.draw.lines(self.__lcd, self.__green, False, [(0,100), (self.__screenWidth-1,100)], 1) # midline
@@ -221,7 +221,9 @@ class Display():
     def refreshDisplay(self):
         pygame.display.update()
 
-    def drawTwitterLogo(self, x, y):
+    def drawTwitterLogo(self):
+        x=self.__screenWidth+2
+        y=5
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x,y), (x,y+2)], 1)
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+1,y+1), (x,y+4)], 1)
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+1,y+6), (x+1,y+6)], 1)
@@ -270,7 +272,6 @@ class Display():
         BUTTON_CHANGE= 22
         BUTTON_QUIT = 27
 
-        pygame.mouse.set_visible(False)
         self.__lcd.fill(self.__black)
         self.displayOptionsTitle()
 
