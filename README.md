@@ -20,3 +20,8 @@ The home lat and lon of the device:
 - lat
 - lon
 
+## To Do
+- Add remote UDP functionality
+- Add remote logo (wifi)
+- consume 1 ads-b record before entering main loop to prevent fallthrough on no stdin
+- detect if no network and create page for manually entering time
