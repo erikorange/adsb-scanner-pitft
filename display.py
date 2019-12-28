@@ -238,10 +238,10 @@ class Display():
             self.__lcd.blit(txt, (lbl[1], lbl[2]))
 
     def drawOptionsButtons(self):
-        txt = self.__titleFont.render(u'\N{DOWNWARDS ARROW}', 1, self.__green)
+        txt = self.__titleFont.render(u'\N{WHITE UP-POINTING TRIANGLE}', 1, self.__green)
         self.__lcd.blit(txt, (302, 37))
 
-        txt = self.__titleFont.render(u'\N{WHITE UP-POINTING TRIANGLE}', 1, self.__green)
+        txt = self.__titleFont.render(u'\N{DOWNWARDS ARROW}', 1, self.__green)
         self.__lcd.blit(txt, (302, 96))
 
         txt = self.__titleFont.render(u'\N{LEFTWARDS ARROW}', 1, self.__green)
@@ -256,8 +256,8 @@ class Display():
         pygame.draw.polygon(self.__lcd, color, [(posX, posY), (posX-7, posY-5), (posX-7, posY+5), (posX, posY)], 0)
             
     def setupOptionsDisplay(self):
-        BUTTON_DOWN = 17
-        BUTTON_CHANGE= 22
+        BUTTON_CHANGE= 17
+        BUTTON_DOWN = 22
         BUTTON_QUIT = 27
 
         self.__lcd.fill(self.__black)
