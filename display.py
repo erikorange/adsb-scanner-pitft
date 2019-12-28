@@ -222,7 +222,7 @@ class Display():
         pygame.display.update()
 
     def drawTwitterLogo(self):
-        x=self.__screenWidth+2
+        x=self.__screenWidth+1
         y=5
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x,y), (x,y+2)], 1)
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+1,y+1), (x,y+4)], 1)
@@ -236,6 +236,10 @@ class Display():
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+8,y-1), (x+8,y)], 1)
         pygame.draw.lines(self.__lcd, self.__cyan, False, [(x+9,y-1), (x+9,y-1)], 1)
         self.refreshDisplay()
+
+    def displayTwitterLogo(self):
+        image = pygame.image.load(r'twitterlogo.png')
+        self.__lcd.blit(image, (self.__screenWidth+1, 0)) 
 
     def displayOptionsTitle(self):
         pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
