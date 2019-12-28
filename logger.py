@@ -120,7 +120,7 @@ dsp.drawOffButton()
 dsp.drawExitButton()
 
 if (tweetMil or tweetLast10CivMil):
-    dsp.drawTwitterLogo()
+    dsp.displayTwitterLogo()
 
 checkAndMakeDir(LOG_DIR)
 
