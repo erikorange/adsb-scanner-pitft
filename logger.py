@@ -6,6 +6,7 @@ import time
 import collections
 import RPi.GPIO as GPIO
 from display import Display
+from remote import Remote
 from util import Util
 from adsb import Adsb
 from tweet import Tweet
@@ -119,6 +120,11 @@ dsp.drawMilButton(milMode)
 dsp.drawOffButton()
 dsp.drawExitButton()
 
+rh = Remote()
+if (remoteHead):
+    Util.timestamp('starting remote thread')
+    rh.startRemote()
+
 if (tweetMil or tweetLast10CivMil):
     dsp.displayTwitterLogo()
 
@@ -130,10 +136,12 @@ if (milTestMode):
     milTestList=('VADER07', 'STING42', 'POLO57', 'STEEL98', 'BISON22', 'RULE71', 'JEEP31', 'RCH285', 'SLAM90', 'FLASH29')
     milTestIdx=0
 
-
 for adsbdata in sys.stdin:
 
     if adsbObj.isValidRec(adsbdata):
+
+        if (remoteHead):
+            rh.addToQueue(adsbdata)
 
         adsbObj.loadData(adsbdata)
 
