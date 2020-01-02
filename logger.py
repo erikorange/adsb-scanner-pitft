@@ -237,7 +237,7 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if ((adsbCount % 10000 == 0) and (tweetLast10CivMil or tweetMil)):
+        if ((adsbCount % 100000 == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
