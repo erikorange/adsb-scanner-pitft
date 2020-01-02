@@ -275,12 +275,12 @@ class Display():
         self.drawOptionsButtons()
 
         options = [ ('Military', 'Military + Civilian'),
-                    ('Disable', 'Military Only', 'Last 10 Civ + Mil', 'Both'),
+                    ('Disable', 'Military Only', 'Military + Civilian'),
                     ('Disable', 'Enable')]
 
         # order of line item options in tuple
         modeT = 0       # milMode: T|F
-        tweetT = 1      # tweetAllRecent,tweetMil: (F,F) | (F,T) | (T,F) | (T,T)
+        tweetT = 1      # tweetAllRecent,tweetMil: (F,F) | (F,T) | (T,T)
         remoteT = 2     # remoteHead: F|T
 
         # track current choice in each line item
@@ -396,9 +396,6 @@ class Display():
         elif (tweetIdx == 1):
             tweetLast10CivMil = False
             tweetMil = True
-        elif (tweetIdx == 2):
-            tweetLast10CivMil = True
-            tweetMil = False
         else:
             tweetLast10CivMil = True
             tweetMil = True
