@@ -50,6 +50,8 @@ class Display():
         self.__white = (255,255,255)
         self.__gray = (128,128,128)
         self.__red = (255,0,0)
+        self.__orange = (255,215,0)
+        self.__purple = (255,0,255)
 
     def setupAdsbDisplay(self):
         self.__lcd.fill(self.__black)
@@ -69,9 +71,10 @@ class Display():
             txtColor = self.__gray
             bgColor = self.__darkPurple
 
-        pygame.draw.rect(self.__lcd, bgColor, (291,30,28,30))
+        pygame.draw.rect(self.__lcd, bgColor, (292,30,28,30))
+        pygame.draw.rect(self.__lcd, self.__purple, (292,30,28,30), 1)
         txt = self.__btnFont.render("Hold", 1, txtColor)
-        self.__lcd.blit(txt, (292, 37))
+        self.__lcd.blit(txt, (293, 37))
 
     def drawMilButton(self, isOn):
         if (isOn):
@@ -81,19 +84,22 @@ class Display():
             txtColor = self.__gray
             bgColor = self.__darkOrange
 
-        pygame.draw.rect(self.__lcd, bgColor, (291,92,28,30))
+        pygame.draw.rect(self.__lcd, bgColor, (292,92,28,30))
+        pygame.draw.rect(self.__lcd, self.__orange, (292,92,28,30), 1)
         txt = self.__btnFont.render("Mil", 1, txtColor)
-        self.__lcd.blit(txt, (297, 99))
+        self.__lcd.blit(txt, (298, 99))
 
     def drawOffButton(self):
-        pygame.draw.rect(self.__lcd, self.__darkRed, (291,154,28,30))
+        pygame.draw.rect(self.__lcd, self.__darkRed, (292,154,28,30))
+        pygame.draw.rect(self.__lcd, self.__red, (292,154,28,30), 1)
         txt = self.__btnFont.render("Off", 1, self.__white)
-        self.__lcd.blit(txt, (297, 161))
+        self.__lcd.blit(txt, (298, 161))
 
     def drawExitButton(self):
-        pygame.draw.rect(self.__lcd, self.__darkRed, (291,220,28,20))
+        pygame.draw.rect(self.__lcd, self.__darkRed, (292,220,28,20))
+        pygame.draw.rect(self.__lcd, self.__red, (292,220,28,20), 1)
         txt = self.__btnFont.render("Exit", 1, self.__white)
-        self.__lcd.blit(txt, (295, 222))
+        self.__lcd.blit(txt, (296, 222))
 
     def clearCallsignAndID(self):
         pygame.draw.rect(self.__lcd, self.__black, (1,3,self.__screenWidth-2,92))
@@ -132,7 +138,8 @@ class Display():
             else:
                 foreColor = self.__mediumBlue
                 backColor = self.__black
-            txt = self.__recentFont.render(recentCs[x], 1, foreColor, backColor)
+            cs = recentCs[x]
+            txt = self.__recentFont.render(cs[:8], 1, foreColor, backColor)
             self.__lcd.blit(txt, (xpos, ypos))
             ypos += 13
     
