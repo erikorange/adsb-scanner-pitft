@@ -5,6 +5,9 @@ from threading import Thread
 
 class Remote():
 
+    def __init__(self):
+        self.__retryInterval = 2
+
     def addToQueue(self, message):
         self.__msgQueue.put(message)
 
@@ -26,9 +29,9 @@ class Remote():
                 try:
                     self.__sck.send(msg)
                 except ConnectionRefusedError:
-                    time.sleep(5)
+                    time.sleep(self.__retryInterval)
                 except:
-                    time.sleep(5)
+                    time.sleep(self.__retryInterval)
                 else:
                     retry = False
                 
