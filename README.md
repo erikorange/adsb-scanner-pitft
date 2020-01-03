@@ -21,9 +21,6 @@ The home lat and lon of the device:
 - lon
 
 ## To Do
-- main thread: create queue that accepts ads-b records, then launch remote thread
-- remote thread: consume queue, send via UDP to remote head
-- Add remote logo (wifi)
 - consume 1 ads-b record before entering main loop to prevent fallthrough on no stdin
 - detect if no network and create page for manually entering time
 - display temperature
@@ -33,5 +30,8 @@ The home lat and lon of the device:
 - detect if local network available -> if not, disable remote head option
 
 ## Done
+- main thread: create queue that accepts ads-b records, then launch remote thread
+- remote thread: consume queue, send via UDP to remote head
 - button borders
 - truncate display of recent callsigns to 8 characters
+- Add remote logo
