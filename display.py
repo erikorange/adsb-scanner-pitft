@@ -234,7 +234,7 @@ class Display():
 
     def displayRemoteLogo(self):
         image = pygame.image.load(r'remote-logo.png')
-        self.__lcd.blit(image, (self.__screenWidth+18, 0)) 
+        self.__lcd.blit(image, (self.__screenWidth+18, 2)) 
 
     def displayOptionsTitle(self):
         pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
