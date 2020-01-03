@@ -232,6 +232,10 @@ class Display():
         image = pygame.image.load(r'twitter-logo.png')
         self.__lcd.blit(image, (self.__screenWidth+1, 0)) 
 
+    def displayRemoteLogo(self):
+        image = pygame.image.load(r'remote-logo.png')
+        self.__lcd.blit(image, (self.__screenWidth+18, 0)) 
+
     def displayOptionsTitle(self):
         pygame.draw.rect(self.__lcd, self.__darkPurple, (0, 0, self.__displayWidth, 23), 0)
         txt = self.__titleFont.render('ads-b scanner - ' + u'\N{COPYRIGHT SIGN}' + ' Erik Orange', 1, self.__yellow)

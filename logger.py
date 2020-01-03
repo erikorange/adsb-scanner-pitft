@@ -123,6 +123,7 @@ dsp.drawExitButton()
 rh = Remote()
 if (remoteHead):
     Util.timestamp('starting remote thread')
+    dsp.displayRemoteLogo()
     rh.startRemote()
 
 if (tweetMil or tweetLast10CivMil):
