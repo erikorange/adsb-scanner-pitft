@@ -216,7 +216,7 @@ class Display():
         self.__lcd.blit(txt, (xpos, ypos))
         txt = self.__fltFont.render("Lat: " + lat, 1, self.__mediumBlue)
         self.__lcd.blit(txt, (xpos, ypos+15))
-        txt = self.__fltFont.render("Lon: " + lon, 1, self.__mediumBlue)
+        txt = self.__fltFont.render("Lon:" + lon, 1, self.__mediumBlue)
         self.__lcd.blit(txt, (xpos, ypos+30))
         txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__mediumBlue)
         self.__lcd.blit(txt, (xpos, ypos+45))
