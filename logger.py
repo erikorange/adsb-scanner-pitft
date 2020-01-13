@@ -109,7 +109,7 @@ Util.timestamp('configuring GPIO')
 setupButtonHardware()
 
 Util.timestamp('starting GUI')
-milMode, tweetMil, tweetLast10CivMil, remoteHead = dsp.setupOptionsDisplay()    # Get initial options
+milMode, tweetMil, tweetLast10CivMil, remoteHead, milTestMode = dsp.setupOptionsDisplay()    # Get initial options
 if (tweetMil or tweetLast10CivMil):
     tweeter = Tweet()
 
@@ -130,8 +130,6 @@ if (tweetMil or tweetLast10CivMil):
     dsp.displayTwitterLogo()
 
 checkAndMakeDir(LOG_DIR)
-
-milTestMode=False
 
 if (milTestMode):
     milTestList=('VADER07', 'STING42', 'POLO57', 'STEEL98', 'BISON22', 'RULE71', 'JEEP31', 'RCH285', 'SLAM90', 'FLASH29')
@@ -202,9 +200,15 @@ for adsbdata in sys.stdin:
                 newLen = len(loggedMilCallsigns)
                 if newLen > oldLen:
                     csMilCount += 1
-                    writeCallsigns(csMilfn, sorted(loggedMilCallsigns))
+                    if (not milTestMode):
+                        writeCallsigns(csMilfn, sorted(loggedMilCallsigns))
+                        
                     if (tweetMil):
-                        tweeter.sendTweet("{0} Mil {1}".format(currentCallsign,getDateTime(adsbObj.theDate, adsbObj.theTime)))
+                        if (not milTestMode):
+                            tweeter.sendTweet("{0} {1} {2}".format(currentCallsign, currentID, getDateTime(adsbObj.theDate, adsbObj.theTime)))
+                        else:
+                            tweeter.sendTweet("TEST {0} {1} {2}".format(currentCallsign, currentID, getDateTime(adsbObj.theDate, adsbObj.theTime)))
+
             else:
                 oldLen = len(loggedCivCallsigns)
                 loggedCivCallsigns.add(currentCallsign)

@@ -243,7 +243,7 @@ class Display():
 
     def displayOptionsLabels(self, baseY):
         lblX=14
-        labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+40), ("Remote:", lblX, baseY+80)]
+        labels = [("Mode:", lblX, baseY), ("Tweet:", lblX, baseY+40), ("Remote:", lblX, baseY+80), ("Mil Test:", lblX, baseY+120)]
         for lbl in labels:
             txt = self.__optsFont.render(lbl[0], 1, self.__cyan)
             self.__lcd.blit(txt, (lbl[1], lbl[2]))
@@ -280,17 +280,20 @@ class Display():
 
         options = [ ('Military', 'Military + Civilian'),
                     ('Disable', 'Military Only', 'Military + Civilian'),
+                    ('Disable', 'Enable'),
                     ('Disable', 'Enable')]
 
         # order of line item options in tuple
         modeT = 0       # milMode: T|F
         tweetT = 1      # tweetAllRecent,tweetMil: (F,F) | (F,T) | (T,T)
         remoteT = 2     # remoteHead: F|T
+        milTestT = 3    # milTestMode: F|T
 
         # track current choice in each line item
         modeIdx = 0
         tweetIdx = 0
         remoteIdx = 0
+        milTestIdx = 0
 
         # draw initial choices
         valX=87
@@ -300,17 +303,19 @@ class Display():
         self.__lcd.blit(txt, (valX, baseY+40))
         txt = self.__optsFont.render(options[remoteT][remoteIdx], 1, self.__yellow)
         self.__lcd.blit(txt, (valX, baseY+80))
+        txt = self.__optsFont.render(options[milTestT][milTestIdx], 1, self.__yellow)
+        self.__lcd.blit(txt, (valX, baseY+120))
 
         # set up coords for option pointer
         arX=9
         arY=baseY+8
-        arCoords=[(arX, arY), (arX, arY+40), (arX,arY+80)]
+        arCoords=[(arX, arY), (arX, arY+40), (arX,arY+80), (arX,arY+120)]
         arIdx=0
         self.drawOptionPointer(arCoords[arIdx][0], arCoords[arIdx][1], True)
         self.refreshDisplay()
 
         exitFlag=False
-        totalSeconds=10
+        totalSeconds=20
         currentSeconds=totalSeconds
 
         timeTxt = self.__optsFont.render(str(currentSeconds), 1, self.__yellow)
@@ -380,6 +385,16 @@ class Display():
                     txt = self.__optsFont.render(options[remoteT][remoteIdx], 1, self.__yellow)
                     self.__lcd.blit(txt, (valX, baseY+80))
 
+                elif (arIdx == 3):
+                    txt = self.__optsFont.render(options[milTestT][milTestIdx], 1, self.__black)
+                    pygame.draw.rect(self.__lcd, self.__black, txt.get_rect(topleft=(valX,baseY+120)))
+                    milTestIdx+=1
+                    if (milTestIdx == len(options[milTestT])):
+                        milTestIdx = 0
+
+                    txt = self.__optsFont.render(options[milTestT][milTestIdx], 1, self.__yellow)
+                    self.__lcd.blit(txt, (valX, baseY+120))
+
                 self.refreshDisplay()
                 currentSeconds=totalSeconds+1
                 time.sleep(0.25)
@@ -409,7 +424,12 @@ class Display():
         else:
             remoteHead = True
     
-        return milMode, tweetMil, tweetLast10CivMil, remoteHead
+        if (milTestIdx == 0):
+            milTestMode = False
+        else:
+            milTestMode = True
+
+        return milMode, tweetMil, tweetLast10CivMil, remoteHead, milTestMode
         
 
 
