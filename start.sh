@@ -1,2 +1,1 @@
-cd /home/pi/adsb-logger
-nc 127.0.0.1 30003 | python logger.py > pylog.log
+nc 127.0.0.1 30003 | python3 logger.py > pylog.log
