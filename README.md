@@ -25,7 +25,7 @@ The home lat and lon of the device:
 - detect if no network and create page for manually entering time
 - display temperature
 - keep track of date change and create new folder
-- Turn Exit into options page -> redo options choices, display recent mil and civ
+- Turn Exit into options page -> redo options choices, display recent mil and civ, show queue length
 - detect if Internet available -> if not, get manual time/date and disable twitter
 - detect if local network available -> if not, disable remote head option
 
@@ -35,3 +35,6 @@ The home lat and lon of the device:
 - button borders
 - truncate display of recent callsigns to 8 characters
 - Add remote logo
+- Add Mil Test Mode startup option
+- Add "TEST" to tweet if Mil Test Mode
+- Don't write mill callsigns to file if Mil Test Mode
