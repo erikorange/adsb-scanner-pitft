@@ -6,6 +6,7 @@ import time
 import collections
 import RPi.GPIO as GPIO
 from display import Display
+from remote import Remote
 from util import Util
 from adsb import Adsb
 from tweet import Tweet
@@ -22,12 +23,6 @@ def setupButtonHardware():
     GPIO.setup(BUTTON_HOLD, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BUTTON_MIL, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BUTTON_QUIT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-def isButtonPressed(button):
-    if not(GPIO.input(button)):
-        return 1
-    else:
-        return 0
 
 def shutdownEvent(signal, frame):
     sys.exit(0)
@@ -83,13 +78,17 @@ def getHomeLatLon(filename):
     f.close()
     return lat, lon
 
+Util.timestamp('ads-b scanner starting')
 
+Util.timestamp('registering signals')
 signal.signal(signal.SIGTERM, shutdownEvent)
 signal.signal(signal.SIGINT, shutdownEvent)
 signal.signal(signal.SIGTSTP, shutdownEvent)
 
+Util.timestamp('getting lat/lon')
 HOME_LAT, HOME_LON = getHomeLatLon("home-lat-lon.txt")
 
+Util.timestamp('defining data structures')
 loggedCivCallsigns = set()
 loggedMilCallsigns = set()
 csCivCount = 0
@@ -99,28 +98,51 @@ recentCount = 0
 firstRow = 1
 adsbCount = 0
 holdMode = False
-milMode = False
 currentCallsign = ""
 currentID = ""
-tweetRecents = True
-tweetMil = True
 
-
+Util.timestamp('creating objects')
 dsp = Display()
 adsbObj = Adsb()
-tweeter = Tweet()
 
+Util.timestamp('configuring GPIO')
 setupButtonHardware()
+
+Util.timestamp('starting GUI')
+milMode, tweetMil, tweetLast10CivMil, remoteHead = dsp.setupOptionsDisplay()    # Get initial options
+if (tweetMil or tweetLast10CivMil):
+    tweeter = Tweet()
+
+
+dsp.setupAdsbDisplay()
 dsp.drawHoldButton(holdMode)
 dsp.drawMilButton(milMode)
 dsp.drawOffButton()
 dsp.drawExitButton()
 
+rh = Remote()
+if (remoteHead):
+    Util.timestamp('starting remote thread')
+    dsp.displayRemoteLogo()
+    rh.startRemote()
+
+if (tweetMil or tweetLast10CivMil):
+    dsp.displayTwitterLogo()
+
 checkAndMakeDir(LOG_DIR)
+
+milTestMode=False
+
+if (milTestMode):
+    milTestList=('VADER07', 'STING42', 'POLO57', 'STEEL98', 'BISON22', 'RULE71', 'JEEP31', 'RCH285', 'SLAM90', 'FLASH29')
+    milTestIdx=0
 
 for adsbdata in sys.stdin:
 
     if adsbObj.isValidRec(adsbdata):
+
+        if (remoteHead):
+            rh.addToQueue(adsbdata)
 
         adsbObj.loadData(adsbdata)
 
@@ -142,12 +164,27 @@ for adsbdata in sys.stdin:
 
         # update just the recent callsign display and the logged callsigns if new
         currentCallsign = adsbObj.callsign.strip()
+
+        if (milTestMode):
+            if (adsbCount % 500 == 0):
+                currentCallsign = milTestList[milTestIdx]
+                milTestIdx+=1
+                if (milTestIdx == len(milTestList)):
+                    milTestIdx=0
+
+
         if (currentCallsign != ""):
+
+            # Mil callsign:     if not mil mode, then display, add to recents, tweet if enabled
+            #                   if mil mode, then do the same
+            #
+            # Civ callsign:     if not mil mode, then display, add to recents, tweet if enabled
+            #                   if mil mode, then discard, no tweet
             if (not milMode or (milMode and Util.isMilCallsign(currentCallsign))):
                 recentCallsigns, recentCount = addToRecents(currentCallsign, recentCallsigns, recentCount)
                 dsp.displayRecents(recentCallsigns)
 
-                if (tweetRecents):
+                if (tweetLast10CivMil):
                     if (recentCount == 10):
                         recentCount = 0
                         msg = ""
@@ -209,31 +246,31 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        if (tweeter.tweetCount % 5 == 0):
+        if ((adsbCount % 100000 == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
             cpuTemp = Util.getCPUTemp() + u'\N{DEGREE SIGN}'
             uptime = Util.getUptime()
-            status = "civ:" + civCnt + " mil:" + milCnt + " adsb:" + adsbCnt + " cpu temp:" + cpuTemp + " uptime:" + uptime
+            status = "civ:" + civCnt + " mil:" + milCnt + " adsb:" + adsbCnt + " cpu temp:" + cpuTemp + " " + uptime
             tweeter.sendTweet(status)
 
 
-    if (isButtonPressed(BUTTON_HOLD) and holdMode == False):
+    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == False):
         holdMode = True
         dsp.drawHoldButton(holdMode)
         adsbObj.clearLastFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (isButtonPressed(BUTTON_HOLD) and holdMode == True):
+    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == True):
         holdMode = False
         dsp.drawHoldButton(holdMode)
         dsp.refreshDisplay()
         adsbObj.clearLastCallsignID()
         time.sleep(1)
 
-    if (isButtonPressed(BUTTON_MIL) and milMode == False):
+    if (Util.isButtonPressed(BUTTON_MIL) and milMode == False):
         milMode = True
         dsp.drawMilButton(milMode)
         dsp.clearCallsignAndID()
@@ -241,11 +278,13 @@ for adsbdata in sys.stdin:
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (isButtonPressed(BUTTON_MIL) and milMode == True):
+    if (Util.isButtonPressed(BUTTON_MIL) and milMode == True):
         milMode = False
         dsp.drawMilButton(milMode)
         dsp.refreshDisplay()
         time.sleep(1)
       
-    if (isButtonPressed(BUTTON_QUIT)):
+    if (Util.isButtonPressed(BUTTON_QUIT)):
         sys.exit(0)
+
+print("Exiting main loop")
