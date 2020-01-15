@@ -22,7 +22,7 @@ class Util:
         res = os.popen('vcgencmd measure_temp').readline()
         tempC = float(res.replace("temp=","").replace("'C\n",""))
         tempF = (tempC * (9/5)) + 32
-        return str(tempF)
+        return "{0:0.2f}".format(tempF)
     
     @staticmethod
     def getUptime():
