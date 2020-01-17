@@ -100,6 +100,11 @@ adsbCount = 0
 holdMode = False
 currentCallsign = ""
 currentID = ""
+topDist=0
+topAlt=0
+topDistID=""
+topAltID=""
+
 
 Util.timestamp('creating objects')
 dsp = Display()
@@ -219,6 +224,15 @@ for adsbdata in sys.stdin:
 
             dsp.updateCallsignCount(csCivCount, csMilCount)
 
+        gotLatLon = False
+        if (adsbObj.lat != "" and adsbObj.lon != ""):
+            gotLatLon = True
+            dist = Util.haversine(HOME_LAT, HOME_LON, float(adsbObj.lat), float(adsbObj.lon))
+            bearing = Util.calculateBearing(HOME_LAT, HOME_LON, float(adsbObj.lat), float(adsbObj.lon))
+            if (dist > topDist):
+                topDist = dist   
+                topDistID = currentID
+
         if (holdMode and (currentID == lastID)):
             dsp.clearCallsignAndID()
             dsp.clearFlightData()
@@ -227,14 +241,9 @@ for adsbdata in sys.stdin:
             dsp.displayLastSeen(adsbObj)
             dsp.displayFlightData(adsbObj, True)
 
-            aclat = adsbObj.lat
-            aclon = adsbObj.lon
-            if (aclat != "" and aclon != ""):
-                dist = Util.haversine(HOME_LON, HOME_LAT, float(aclon), float(aclat)) * 0.62137 # convert km to mi
-                bearing = Util.calculateBearing(HOME_LAT, HOME_LON, float(aclat), float(aclon))
+            if (gotLatLon):
                 dsp.displayDistance(dist, bearing)
-                adsbObj.lastDist = dist
-                adsbObj.lastBearing = bearing
+                adsbObj.lastDist, adsbObj.lastBearing = (dist, bearing)
             elif (not adsbObj.lastDist is None):
                 dsp.displayDistance(adsbObj.lastDist, adsbObj.lastBearing)
 
@@ -250,13 +259,24 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
+        try:
+            theAlt=int(adsbObj.altitude)
+        except ValueError:
+            theAlt=0
+        
+        if (theAlt > topAlt):
+                topAlt = theAlt
+                topAltID = currentID
+
+
         if ((adsbCount % 100000 == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
             cpuTemp = Util.getCPUTemp() + u'\N{DEGREE SIGN}'
             uptime = Util.getUptime()
-            status = "civ:{0} mil:{1} adsb:{2} cpu:{3} {4}".format(civCnt, milCnt, adsbCnt, cpuTemp, uptime)
+            status = "civ:{0} mil:{1} adsb:{2}\n dist:{3:0.1f} {4} alt:{5} {6} cpu:{7}\n{8}".format(
+                civCnt, milCnt, adsbCnt, topDist, topDistID, str(topAlt), topAltID, cpuTemp, uptime)
             tweeter.sendTweet(status)
 
 
