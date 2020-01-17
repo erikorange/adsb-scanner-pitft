@@ -10,6 +10,7 @@ from remote import Remote
 from util import Util
 from adsb import Adsb
 from tweet import Tweet
+from filemgr import FileMgr
 
 BUTTON_HOLD = 17
 BUTTON_MIL = 22
@@ -27,20 +28,18 @@ def setupButtonHardware():
 def shutdownEvent(signal, frame):
     sys.exit(0)
 
-def writeADSBHeader(filename):
-    theFile = open(filename, "a")
-    theFile.write("ICAO ID,Date,Time,Callsign,Altitude,Ground Speed,Ground Track Angle,Lat,Lon,Vertical Rate,Squawk\n")
-    theFile.close()
+def writeADSBHeader(fileMgr):
+    header="ICAO ID,Date,Time,Callsign,Altitude,Ground Speed,Ground Track Angle,Lat,Lon,Vertical Rate,Squawk"
+    fileMgr.writeToFile(header)
 
 def getDateTime(theDate, theTime):
     return theDate.replace("/","") + "-" + theTime[:8].replace(":","")
 
-def writeADSBData(filename, adsb):
-    theFile = open(filename, "a")
-    dataRow = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}\n"
-    theFile.write(dataRow.format(adsb.ICAOid, adsb.theDate, adsb.theTime, adsb.callsign, adsb.altitude,
-                                 adsb.groundSpeed, adsb.track, adsb.lat, adsb.lon, adsb.verticalRate, adsb.squawk))
-    theFile.close()
+def writeADSBData(fileMgr, adsb):
+    dataRow = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}"
+    record=dataRow.format(adsb.ICAOid, adsb.theDate, adsb.theTime, adsb.callsign, adsb.altitude,
+                                 adsb.groundSpeed, adsb.track, adsb.lat, adsb.lon, adsb.verticalRate, adsb.squawk)
+    fileMgr.writeToFile(record)
 
 def writeCallsigns(filename, callsigns):
     theFile = open(filename, "w")
@@ -95,7 +94,7 @@ csCivCount = 0
 csMilCount = 0
 recentCallsigns = collections.deque(maxlen=20)
 recentCount = 0
-firstRow = 1
+firstRow = True
 adsbCount = 0
 holdMode = False
 currentCallsign = ""
@@ -109,6 +108,7 @@ topAltID=""
 Util.timestamp('creating objects')
 dsp = Display()
 adsbObj = Adsb()
+fileMgr = FileMgr()
 
 Util.timestamp('configuring GPIO')
 setupButtonHardware()
@@ -155,11 +155,12 @@ for adsbdata in sys.stdin:
             csCivfn = os.path.join(logPath, "civ-callsign-" + dt + ".txt")
             csMilfn = os.path.join(logPath, "mil-callsign-" + dt + ".txt")
             adsbfn = os.path.join(logPath, "adsbdata-" + dt + ".txt")
-            writeADSBHeader(adsbfn)
-            firstRow = 0
+            fileMgr.createFile(adsbfn)
+            writeADSBHeader(fileMgr)
+            firstRow = False
 
         # always log ADSB data and save the current ICAO ID
-        writeADSBData(adsbfn, adsbObj)
+        writeADSBData(fileMgr, adsbObj)
         adsbCount += 1
         dsp.updateAdsbCount(adsbCount)
         dsp.refreshDisplay()
@@ -264,7 +265,7 @@ for adsbdata in sys.stdin:
         except ValueError:
             theAlt=0
         
-        if (theAlt > topAlt):
+        if ((theAlt < 100000) and (theAlt > topAlt)):
                 topAlt = theAlt
                 topAltID = currentID
 
@@ -309,6 +310,7 @@ for adsbdata in sys.stdin:
         time.sleep(1)
       
     if (Util.isButtonPressed(BUTTON_QUIT)):
+        fileMgr.closeFile()
         sys.exit(0)
 
 print("Exiting main loop")
