@@ -39,7 +39,7 @@ class Util:
             return 0
 
     @staticmethod
-    def haversine(homeLon, homeLat, aircraftLon, aircraftLat):
+    def haversine(homeLat, homeLon, aircraftLat, aircraftLon):
         # convert decimal degrees to radians 
         homeLon, homeLat, aircraftLon, aircraftLat = map(radians, [homeLon, homeLat, aircraftLon, aircraftLat])
 
@@ -49,7 +49,7 @@ class Util:
         a = sin(dlat/2)**2 + cos(homeLat) * cos(aircraftLat) * sin(dlon/2)**2
         c = 2 * asin(sqrt(a)) 
         r = 6371 # Radius of earth in kilometers is 6371.
-        return c * r
+        return c * r * 0.62137 # convert km to mi
 
     @staticmethod
     def calculateBearing(homeLat, homeLon, aircraftLat, aircraftLon):
