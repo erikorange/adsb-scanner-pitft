@@ -16,7 +16,7 @@ BUTTON_HOLD = 17
 BUTTON_MIL = 22
 #BUTTON_3 = 23 # configured for shutdown
 BUTTON_QUIT = 27
-
+MAX_ALTITUDE = 60000
 LOG_DIR = 'logs'
 
 def setupButtonHardware():
@@ -265,7 +265,7 @@ for adsbdata in sys.stdin:
         except ValueError:
             theAlt=0
         
-        if ((theAlt < 100000) and (theAlt > topAlt)):
+        if ((theAlt < MAX_ALTITUDE) and (theAlt > topAlt)):
                 topAlt = theAlt
                 topAltID = currentID
 
