@@ -21,6 +21,9 @@ The home lat and lon of the device:
 - lon
 
 ## To Do
+- change stdin to socket reads
+- add main function and if __name__ == '__main__': main()
+- hook up GPIO button 23 (shutdown was deprecated after buster upgrade)
 - consume 1 ads-b record before entering main loop to prevent fallthrough on no stdin
 - detect if no network and create page for manually entering time
 - display temperature
