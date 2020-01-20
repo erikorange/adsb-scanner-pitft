@@ -1,5 +1,5 @@
 # this is appended to the end of .bashrc
-cd ~/adsb-logger
+cd ~/adsb-scanner
 if [ -n "$SSH_CLIENT" ]; then
   echo "Remote login detected"
 else
