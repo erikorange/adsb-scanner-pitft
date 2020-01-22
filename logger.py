@@ -163,7 +163,6 @@ for adsbdata in sys.stdin:
         writeADSBData(fileMgr, adsbObj)
         adsbCount += 1
         dsp.updateAdsbCount(adsbCount)
-        dsp.refreshDisplay()
         currentID = adsbObj.ICAOid
 
         # update just the recent callsign display and the logged callsigns if new
@@ -280,35 +279,30 @@ for adsbdata in sys.stdin:
                 civCnt, milCnt, adsbCnt, topDist, topDistID, str(topAlt), topAltID, cpuTemp, uptime)
             tweeter.sendTweet(status)
 
-
-    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == False):
-        holdMode = True
+    if (Util.isButtonPressed(BUTTON_HOLD)):
+        if (holdMode):
+            holdMode = False
+            adsbObj.clearLastCallsignID()
+        else:
+            holdMode = True
+            adsbObj.clearLastFlightData()
+            
         dsp.drawHoldButton(holdMode)
-        adsbObj.clearLastFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == True):
-        holdMode = False
-        dsp.drawHoldButton(holdMode)
-        dsp.refreshDisplay()
-        adsbObj.clearLastCallsignID()
-        time.sleep(1)
-
-    if (Util.isButtonPressed(BUTTON_MIL) and milMode == False):
-        milMode = True
+    if (Util.isButtonPressed(BUTTON_MIL)):
+        if (milMode):
+            milMode = False
+        else:
+            milMode = True
+            dsp.clearCallsignAndID()
+            dsp.clearFlightData()
+            
         dsp.drawMilButton(milMode)
-        dsp.clearCallsignAndID()
-        dsp.clearFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (Util.isButtonPressed(BUTTON_MIL) and milMode == True):
-        milMode = False
-        dsp.drawMilButton(milMode)
-        dsp.refreshDisplay()
-        time.sleep(1)
-      
     if (Util.isButtonPressed(BUTTON_QUIT)):
         fileMgr.closeFile()
         sys.exit(0)
