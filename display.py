@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import os
 from util import Util
 import time
@@ -19,7 +20,9 @@ class Display():
         os.putenv('SDL_FBDEV', '/dev/fb1')
         pygame.init()
         pygame.mouse.set_visible(False)
-        self.__lcd = pygame.display.set_mode((self.__displayWidth, self.__screenHeight))
+        flags = FULLSCREEN | DOUBLEBUF | HWSURFACE
+        self.__lcd = pygame.display.set_mode((self.__displayWidth, self.__screenHeight), flags)
+        self.__lcd.set_alpha(None)
 
     def __initFonts(self):
         fontDir="/usr/share/fonts/truetype/freefont/"
@@ -158,9 +161,9 @@ class Display():
     def updateAdsbCount(self, cnt):
         pygame.draw.rect(self.__lcd, self.__black, (3,221,143,16))
         lab = self.__statsFont.render("adsb:", 1, self.__cyan)
-        self.__lcd.blit(lab, (15,221))
+        self.__lcd.blit(lab, (3,221))
         num = self.__statsFont.render("{:,}".format(cnt), 1, self.__white)
-        self.__lcd.blit(num, (15 + lab.get_width() + 1,221))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,221))
 
     def displayDistance(self, dist, bearing):
         pygame.draw.rect(self.__lcd, self.__black, (204,3,84,27))
