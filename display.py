@@ -149,9 +149,9 @@ class Display():
     def updateCallsignCount(self, civCnt, milCnt):
         pygame.draw.rect(self.__lcd, self.__black, (3,203,143,16))
         lab = self.__statsFont.render("civ:", 1, self.__cyan)
-        self.__lcd.blit(lab, (5,203))
+        self.__lcd.blit(lab, (3,203))
         num = self.__statsFont.render("{:,}".format(civCnt), 1, self.__white)
-        self.__lcd.blit(num, (5 + lab.get_width() + 1,203))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,203))
 
         lab = self.__statsFont.render("mil:", 1, self.__cyan)
         self.__lcd.blit(lab, (79,203))
