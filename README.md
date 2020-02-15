@@ -1,40 +1,26 @@
-# adsb-logger-pitft
+# adsb-scanner-pitft
 
 ## Overview
-This is python code for an ads-b scanner running on a Raspberry Pi.  It uses dump1090-mutability to provide the mode S records.  The output is rendered onto a TFT display.
+This is python code for an ads-b scanner running on a Raspberry Pi.  It uses dump1090-fa to provide the mode S records.  The output is rendered onto a TFT display.
 
-## Setup
-All files are contained in folder named adsb-logger.
+## Features
+* Separate Military and Civilian callsign displays
+* Last 20 callsigns are shown on a rolling display
+* Military callisigns highlihted in bold yellow and red
+* Always logs all ads-b records and callsigns to files in datestamped directories
+* Hold mode for displaying telemetry for a specific aircraft, including distance and bearing
+* Military mode only displays military callsigns
+* Optional Twitter integration for notifying you of recent callsigns
+* Remote head functionality (hardware under development)
+* Startup page for choosing various options
 
-## Required Files not in this rep
+## How do I build one?
+Read the install guide in the __docs__ folder.
 
-### auth.py
-API key for twitter notifications:
-- consumer_key
-- consumer_secret
-- access_token
-- access_token_secret
+## Prerequisites
+The install guide assumes you:
 
-### home-lat-lon.txt
-The home lat and lon of the device:
-- lat
-- lon
-
-## To Do
-- consume 1 ads-b record before entering main loop to prevent fallthrough on no stdin
-- detect if no network and create page for manually entering time
-- display temperature
-- keep track of date change and create new folder
-- Turn Exit into options page -> redo options choices, display recent mil and civ, show queue length
-- detect if Internet available -> if not, get manual time/date and disable twitter
-- detect if local network available -> if not, disable remote head option
-
-## Done
-- main thread: create queue that accepts ads-b records, then launch remote thread
-- remote thread: consume queue, send via UDP to remote head
-- button borders
-- truncate display of recent callsigns to 8 characters
-- Add remote logo
-- Add Mil Test Mode startup option
-- Add "TEST" to tweet if Mil Test Mode
-- Don't write mill callsigns to file if Mil Test Mode
+* Know how to download the Raspberry Pi OS
+* Know how to write the OS to a SD Card
+* Know how to boot a rPi, login with SSH, and perform basic configuration with raspiConfig
+* Know how to use a bash shell, and have the ability to troubleshoot if you type something in wrong

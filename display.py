@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import os
 from util import Util
 import time
@@ -19,7 +20,9 @@ class Display():
         os.putenv('SDL_FBDEV', '/dev/fb1')
         pygame.init()
         pygame.mouse.set_visible(False)
-        self.__lcd = pygame.display.set_mode((self.__displayWidth, self.__screenHeight))
+        flags = FULLSCREEN | DOUBLEBUF | HWSURFACE
+        self.__lcd = pygame.display.set_mode((self.__displayWidth, self.__screenHeight), flags)
+        self.__lcd.set_alpha(None)
 
     def __initFonts(self):
         fontDir="/usr/share/fonts/truetype/freefont/"
@@ -59,9 +62,10 @@ class Display():
         pygame.draw.lines(self.__lcd, self.__green, False, [(0,100), (self.__screenWidth-1,100)], 1) # midline
         pygame.draw.lines(self.__lcd, self.__green, False, [(148,101), (148, self.__screenHeight)], 1) # vertical line
         pygame.draw.lines(self.__lcd, self.__green, False, [(1,200), (148, 200)], 1) # lower line
+
+    def showOpeningMessage(self):
         txt = self.__csFont.render("Acquiring...", 1, self.__yellow)
         self.__lcd.blit(txt, ((self.__screenWidth - txt.get_width())/2, 30))
-        pygame.display.update()
 
     def drawHoldButton(self, isOn):
         if (isOn):
@@ -146,9 +150,9 @@ class Display():
     def updateCallsignCount(self, civCnt, milCnt):
         pygame.draw.rect(self.__lcd, self.__black, (3,203,143,16))
         lab = self.__statsFont.render("civ:", 1, self.__cyan)
-        self.__lcd.blit(lab, (5,203))
+        self.__lcd.blit(lab, (3,203))
         num = self.__statsFont.render("{:,}".format(civCnt), 1, self.__white)
-        self.__lcd.blit(num, (5 + lab.get_width() + 1,203))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,203))
 
         lab = self.__statsFont.render("mil:", 1, self.__cyan)
         self.__lcd.blit(lab, (79,203))
@@ -158,9 +162,9 @@ class Display():
     def updateAdsbCount(self, cnt):
         pygame.draw.rect(self.__lcd, self.__black, (3,221,143,16))
         lab = self.__statsFont.render("adsb:", 1, self.__cyan)
-        self.__lcd.blit(lab, (15,221))
+        self.__lcd.blit(lab, (3,221))
         num = self.__statsFont.render("{:,}".format(cnt), 1, self.__white)
-        self.__lcd.blit(num, (15 + lab.get_width() + 1,221))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,221))
 
     def displayDistance(self, dist, bearing):
         pygame.draw.rect(self.__lcd, self.__black, (204,3,84,27))

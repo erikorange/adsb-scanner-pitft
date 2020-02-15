@@ -39,6 +39,18 @@ class Util:
             return 0
 
     @staticmethod
+    def getHomeLatLon(filename):
+        try:
+            f = open(filename, "r")
+        except:
+            return 41.499741, -81.693726
+
+        lat = float(f.readline())
+        lon = float(f.readline())
+        f.close()
+        return lat, lon
+
+    @staticmethod
     def haversine(homeLat, homeLon, aircraftLat, aircraftLon):
         # convert decimal degrees to radians 
         homeLon, homeLat, aircraftLon, aircraftLat = map(radians, [homeLon, homeLat, aircraftLon, aircraftLat])

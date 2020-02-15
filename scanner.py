@@ -18,6 +18,7 @@ BUTTON_MIL = 22
 BUTTON_QUIT = 27
 
 LOG_DIR = 'logs'
+STATS_INTERVAL = 250000
 
 def setupButtonHardware():
     GPIO.setmode(GPIO.BCM)
@@ -66,16 +67,7 @@ def setupTodaysDir(theDate):
     checkAndMakeDir(path)
     return path
 
-def getHomeLatLon(filename):
-    try:
-        f = open(filename, "r")
-    except:
-        return 41.499741, -81.693726
 
-    lat = float(f.readline())
-    lon = float(f.readline())
-    f.close()
-    return lat, lon
 
 Util.timestamp('ads-b scanner starting')
 
@@ -85,7 +77,7 @@ signal.signal(signal.SIGINT, shutdownEvent)
 signal.signal(signal.SIGTSTP, shutdownEvent)
 
 Util.timestamp('getting lat/lon')
-HOME_LAT, HOME_LON = getHomeLatLon("home-lat-lon.txt")
+HOME_LAT, HOME_LON = Util.getHomeLatLon("home-lat-lon.txt")
 
 Util.timestamp('defining data structures')
 loggedCivCallsigns = set()
@@ -100,10 +92,7 @@ holdMode = False
 currentCallsign = ""
 currentID = ""
 topDist=0
-topAlt=0
 topDistID=""
-topAltID=""
-
 
 Util.timestamp('creating objects')
 dsp = Display()
@@ -120,6 +109,7 @@ if (tweetMil or tweetLast10CivMil):
 
 
 dsp.setupAdsbDisplay()
+dsp.showOpeningMessage()
 dsp.drawHoldButton(holdMode)
 dsp.drawMilButton(milMode)
 dsp.drawOffButton()
@@ -163,7 +153,6 @@ for adsbdata in sys.stdin:
         writeADSBData(fileMgr, adsbObj)
         adsbCount += 1
         dsp.updateAdsbCount(adsbCount)
-        dsp.refreshDisplay()
         currentID = adsbObj.ICAOid
 
         # update just the recent callsign display and the logged callsigns if new
@@ -260,55 +249,41 @@ for adsbdata in sys.stdin:
 
         dsp.refreshDisplay()
 
-        try:
-            theAlt=int(adsbObj.altitude)
-        except ValueError:
-            theAlt=0
-        
-        if ((theAlt < 100000) and (theAlt > topAlt)):
-                topAlt = theAlt
-                topAltID = currentID
 
-
-        if ((adsbCount % 100000 == 0) and (tweetLast10CivMil or tweetMil)):
+        if ((adsbCount % STATS_INTERVAL == 0) and (tweetLast10CivMil or tweetMil)):
             civCnt = "{:,}".format(csCivCount)
             milCnt = "{:,}".format(csMilCount)
             adsbCnt = "{:,}".format(adsbCount)
             cpuTemp = Util.getCPUTemp() + u'\N{DEGREE SIGN}'
             uptime = Util.getUptime()
-            status = "civ:{0} mil:{1} adsb:{2}\n dist:{3:0.1f} {4} alt:{5} {6} cpu:{7}\n{8}".format(
-                civCnt, milCnt, adsbCnt, topDist, topDistID, str(topAlt), topAltID, cpuTemp, uptime)
+            status = "civ:{0} mil:{1} adsb:{2}\n dist:{3:0.1f} {4} cpu:{5}\n{6}".format(
+                civCnt, milCnt, adsbCnt, topDist, topDistID, cpuTemp, uptime)
             tweeter.sendTweet(status)
 
-
-    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == False):
-        holdMode = True
+    if (Util.isButtonPressed(BUTTON_HOLD)):
+        if (holdMode):
+            holdMode = False
+            adsbObj.clearLastCallsignID()
+        else:
+            holdMode = True
+            adsbObj.clearLastFlightData()
+            
         dsp.drawHoldButton(holdMode)
-        adsbObj.clearLastFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (Util.isButtonPressed(BUTTON_HOLD) and holdMode == True):
-        holdMode = False
-        dsp.drawHoldButton(holdMode)
-        dsp.refreshDisplay()
-        adsbObj.clearLastCallsignID()
-        time.sleep(1)
-
-    if (Util.isButtonPressed(BUTTON_MIL) and milMode == False):
-        milMode = True
+    if (Util.isButtonPressed(BUTTON_MIL)):
+        if (milMode):
+            milMode = False
+        else:
+            milMode = True
+            dsp.clearCallsignAndID()
+            dsp.clearFlightData()
+            
         dsp.drawMilButton(milMode)
-        dsp.clearCallsignAndID()
-        dsp.clearFlightData()
         dsp.refreshDisplay()
         time.sleep(1)
         
-    if (Util.isButtonPressed(BUTTON_MIL) and milMode == True):
-        milMode = False
-        dsp.drawMilButton(milMode)
-        dsp.refreshDisplay()
-        time.sleep(1)
-      
     if (Util.isButtonPressed(BUTTON_QUIT)):
         fileMgr.closeFile()
         sys.exit(0)
