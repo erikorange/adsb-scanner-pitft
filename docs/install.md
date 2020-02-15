@@ -6,6 +6,7 @@
 * AdaFruit PiTFT Plus 320x240 2.8" TFT, Model 2298.  Has 4 built-in buttons.
   https://www.adafruit.com/product/2298
 * One RTL-SDR (__NooElec NESDR Smart__ or __RTL-SDR Blog R820T2 RTL2832U__)
+* Power supply with enough current for the Pi, TFT, and RTL-SDR.  I use a 3.0A power supply. 
 * Recommended:
   * Case: https://www.adafruit.com/product/2253
   * Faceplate: https://www.adafruit.com/product/2807
