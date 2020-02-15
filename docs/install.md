@@ -1,5 +1,15 @@
 # ads-b scanner build
 
+## Parts List
+* Raspberry Pi 3B or 3B+. This was built using a 3B, but should work on a 3B+.
+* 16GB or 32GB Class 10 Micro SD card.  The OS & software uses < 2GB, but you'll want space for the ads-b logs.
+* AdaFruit PiTFT Plus 320x240 2.8" TFT, Model 2298.  Has 4 built-in buttons.
+  https://www.adafruit.com/product/2298
+* One RTL-SDR (__NooElec NESDR Smart__ or __RTL-SDR Blog R820T2 RTL2832U__)
+* Recommended:
+  * Case: https://www.adafruit.com/product/2253
+  * Faceplate: https://www.adafruit.com/product/2807
+
 ## Install Raspbian
 1.	Download Raspbian Buster lite.
 2.	Format SD card.
@@ -91,7 +101,9 @@ consumer_secret = ''
 access_token = ''
 access_token_secret = ''
 ```
-Substitute your Twitter API keys. Save this file for the __Application Install__ step.
+Substitute your Twitter API keys. If you don't want the Twitter function, then use the above format as-is (no keys) and leave the Tweet option disabled when the ads-b scanner starts.
+
+Save this file for the __Application Install__ step.
 
 ## Application Install
 ```
