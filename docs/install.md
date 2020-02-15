@@ -33,8 +33,8 @@
 6.	Boot the Pi with the SD card, and locate its IP address using your router.
 
 ## Configure Raspbian
-1.	Log in (username: pi, password: raspberry)
-2.	sudo raspi-config
+1.	SSH into the pi (username: pi, password: raspberry)
+2.	`sudo raspi-config`
 3.	__Change User Password__
 4.  __Network Options -> Hostname__
 5.	__Localisation Options -> Change Locale -> en_US.UTF-8 UTF-8__, then __en_US.UTF-8__
