@@ -45,7 +45,8 @@ chmod +x adafruit-pitft.sh
 sudo ./adafruit-pitft.sh		[Choose 90 degrees rotation, and yes to boot to console]
 ```
 References:
-	https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi/easy-install-2
+
+https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi/easy-install-2
 
 ## Install dump1090-fa
 ```
@@ -55,9 +56,11 @@ sudo apt-get update
 sudo apt-get install -y dump1090-fa
 sudo reboot
 ```
-  References:
-	https://flightaware.com/adsb/piaware/install
-	https://discussions.flightaware.com/t/piaware-v-3-7-1-on-debian-10-0-buster-amd64-intel-pc/52414
+References:
+
+https://flightaware.com/adsb/piaware/install
+
+https://discussions.flightaware.com/t/piaware-v-3-7-1-on-debian-10-0-buster-amd64-intel-pc/52414
 
 ## Install Python packages
 ```
