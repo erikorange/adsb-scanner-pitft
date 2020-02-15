@@ -44,7 +44,7 @@ wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/m
 chmod +x adafruit-pitft.sh
 sudo ./adafruit-pitft.sh		[Choose 90 degrees rotation, and yes to boot to console]
 ```
-    References:
+References:
 	https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi/easy-install-2
 
 ## Install dump1090-fa
@@ -55,7 +55,7 @@ sudo apt-get update
 sudo apt-get install -y dump1090-fa
 sudo reboot
 ```
-    References:
+  References:
 	https://flightaware.com/adsb/piaware/install
 	https://discussions.flightaware.com/t/piaware-v-3-7-1-on-debian-10-0-buster-amd64-intel-pc/52414
 
@@ -102,7 +102,7 @@ Copy these files to the adsb-scanner directory:
 * home-lat-lon.txt
 * auth.py
 
-Append this snippet to .bashrc in the pi ~ folder.  This will cause the ads-b scanner to start upon boot, except when you start a SSH session.
+Append this snippet to .bashrc in the pi home folder.  This will cause the ads-b scanner to start upon boot, but not when you start a SSH session.
 ```
 cd ~/adsb-scanner
 if [ -n "$SSH_CLIENT" ]; then
