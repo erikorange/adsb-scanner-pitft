@@ -62,9 +62,10 @@ class Display():
         pygame.draw.lines(self.__lcd, self.__green, False, [(0,100), (self.__screenWidth-1,100)], 1) # midline
         pygame.draw.lines(self.__lcd, self.__green, False, [(148,101), (148, self.__screenHeight)], 1) # vertical line
         pygame.draw.lines(self.__lcd, self.__green, False, [(1,200), (148, 200)], 1) # lower line
+
+    def showOpeningMessage(self):
         txt = self.__csFont.render("Acquiring...", 1, self.__yellow)
         self.__lcd.blit(txt, ((self.__screenWidth - txt.get_width())/2, 30))
-        pygame.display.update()
 
     def drawHoldButton(self, isOn):
         if (isOn):
