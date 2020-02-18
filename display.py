@@ -28,11 +28,11 @@ class Display():
         fontDir="/usr/share/fonts/truetype/freefont/"
         self.__idFont = pygame.font.Font(fontDir + "FreeMono.ttf", 23) # ICAO ID
         self.__csFont = pygame.font.Font(fontDir + "FreeSans.ttf", 40) # callsign
-        self.__fltFont = pygame.font.Font(fontDir + "FreeMono.ttf", 17) # flight data
+        self.__fltFont = pygame.font.Font(fontDir + "FreeMono.ttf", 18) # flight data
         self.__lastSeenFont = pygame.font.Font(fontDir + "FreeSans.ttf", 16) # time last seen
         self.__distFont = pygame.font.Font(fontDir + "FreeSans.ttf", 14) # distance and bearing
         self.__btnFont = pygame.font.Font(fontDir + "FreeSans.ttf", 13)
-        self.__recentFont= pygame.font.Font(fontDir + "FreeSans.ttf", 13)
+        self.__recentFont= pygame.font.Font(fontDir + "FreeSans.ttf", 12)
         self.__statsFont= pygame.font.Font(fontDir + "FreeSans.ttf", 14)
         self.__optsFont = pygame.font.Font(fontDir + "FreeSans.ttf", 17)
         self.__titleFont= pygame.font.Font(fontDir + "FreeSans.ttf", 18)
@@ -43,6 +43,7 @@ class Display():
         self.__black = (0,0,0)
         self.__yellow = (255,255,0)
         self.__mediumBlue = (100,149,237)
+        self.__brighterBlue = (0,128,255)
         self.__cyan = (0,255,255)
         self.__darkRed = (64,0,0)
         self.__medRed = (128,0,0)
@@ -59,9 +60,9 @@ class Display():
     def setupAdsbDisplay(self):
         self.__lcd.fill(self.__black)
         pygame.draw.rect(self.__lcd, self.__green, (0,0,self.__screenWidth, self.__screenHeight), 1) # screen border
-        pygame.draw.lines(self.__lcd, self.__green, False, [(0,100), (self.__screenWidth-1,100)], 1) # midline
-        pygame.draw.lines(self.__lcd, self.__green, False, [(148,101), (148, self.__screenHeight)], 1) # vertical line
-        pygame.draw.lines(self.__lcd, self.__green, False, [(1,200), (148, 200)], 1) # lower line
+        pygame.draw.lines(self.__lcd, self.__green, False, [(0,95), (self.__screenWidth-1,95)], 1) # midline
+        pygame.draw.lines(self.__lcd, self.__green, False, [(148,96), (148, self.__screenHeight)], 1) # vertical line
+        pygame.draw.lines(self.__lcd, self.__green, False, [(1,204), (148, 204)], 1) # lower line
 
     def showOpeningMessage(self):
         txt = self.__csFont.render("Acquiring...", 1, self.__yellow)
@@ -108,9 +109,6 @@ class Display():
     def clearCallsignAndID(self):
         pygame.draw.rect(self.__lcd, self.__black, (1,3,self.__screenWidth-2,92))
 
-    def clearFlightData(self):
-        pygame.draw.rect(self.__lcd, self.__black, (5,105,141,93))
-
     def displayICAOid(self, id):
         txt = self.__idFont.render(id, 1, self.__yellow)
         self.__lcd.blit(txt, ((self.__screenWidth - txt.get_width())/2, 4))
@@ -126,16 +124,17 @@ class Display():
         formattedDate = dateParts[1] + "-" + dateParts[2] + "-" + dateParts[0]
         formattedTime = adsbObj.theTime.split(".")[0]
         txt = self.__lastSeenFont.render("Last seen:  " + formattedTime + "  " + formattedDate, 1, self.__cyan)
-        self.__lcd.blit(txt, ((self.__screenWidth - txt.get_width())/2, 76))
+        self.__lcd.blit(txt, ((self.__screenWidth - txt.get_width())/2, 73))
     
     def displayRecents(self, recentCs):
         xpos = 152
-        ypos = 103
-        pygame.draw.rect(self.__lcd, self.__black, (151,103,136,134))
+        yAnchor = 98
+        ypos = yAnchor
+        pygame.draw.rect(self.__lcd, self.__black, (151,yAnchor,136,140))
         for x in range(0, len(recentCs)):
             if (x == 10):
                 xpos = 221
-                ypos = 103
+                ypos = yAnchor
             if (Util.isMilCallsign(recentCs[x])):
                 foreColor = self.__yellow
                 backColor = self.__medRed
@@ -145,26 +144,26 @@ class Display():
             cs = recentCs[x]
             txt = self.__recentFont.render(cs[:8], 1, foreColor, backColor)
             self.__lcd.blit(txt, (xpos, ypos))
-            ypos += 13
+            ypos += 14
     
     def updateCallsignCount(self, civCnt, milCnt):
-        pygame.draw.rect(self.__lcd, self.__black, (3,203,143,16))
+        pygame.draw.rect(self.__lcd, self.__black, (3,207,143,15))
         lab = self.__statsFont.render("civ:", 1, self.__cyan)
-        self.__lcd.blit(lab, (3,203))
+        self.__lcd.blit(lab, (3,206))
         num = self.__statsFont.render("{:,}".format(civCnt), 1, self.__white)
-        self.__lcd.blit(num, (3 + lab.get_width() + 1,203))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,206))
 
         lab = self.__statsFont.render("mil:", 1, self.__cyan)
-        self.__lcd.blit(lab, (79,203))
+        self.__lcd.blit(lab, (79,206))
         num = self.__statsFont.render("{:,}".format(milCnt), 1, self.__white)
-        self.__lcd.blit(num, (79 + lab.get_width() + 1,203))
+        self.__lcd.blit(num, (79 + lab.get_width() + 1,206))
 
     def updateAdsbCount(self, cnt):
-        pygame.draw.rect(self.__lcd, self.__black, (3,221,143,16))
+        pygame.draw.rect(self.__lcd, self.__black, (3,223,143,15))
         lab = self.__statsFont.render("adsb:", 1, self.__cyan)
-        self.__lcd.blit(lab, (3,221))
+        self.__lcd.blit(lab, (3,222))
         num = self.__statsFont.render("{:,}".format(cnt), 1, self.__white)
-        self.__lcd.blit(num, (3 + lab.get_width() + 1,221))
+        self.__lcd.blit(num, (3 + lab.get_width() + 1,222))
 
     def displayDistance(self, dist, bearing):
         pygame.draw.rect(self.__lcd, self.__black, (204,3,84,27))
@@ -214,20 +213,23 @@ class Display():
             else:
                 adsbObj.lastSquawk = squawk
 
-        xpos = 5
-        ypos = 105
-        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__mediumBlue)
+        xpos = 3
+        ypos = 97
+        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__brighterBlue)
         self.__lcd.blit(txt, (xpos, ypos))
-        txt = self.__fltFont.render("Lat: " + lat, 1, self.__mediumBlue)
-        self.__lcd.blit(txt, (xpos, ypos+15))
-        txt = self.__fltFont.render("Lon:" + lon, 1, self.__mediumBlue)
-        self.__lcd.blit(txt, (xpos, ypos+30))
-        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__mediumBlue)
-        self.__lcd.blit(txt, (xpos, ypos+45))
-        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__mediumBlue)
-        self.__lcd.blit(txt, (xpos, ypos+60))
-        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__mediumBlue)
-        self.__lcd.blit(txt, (xpos, ypos+75))
+        txt = self.__fltFont.render("Lat: " + lat, 1, self.__brighterBlue)
+        self.__lcd.blit(txt, (xpos, ypos+17))
+        txt = self.__fltFont.render("Lon:" + lon, 1, self.__brighterBlue)
+        self.__lcd.blit(txt, (xpos, ypos+34))
+        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__brighterBlue)
+        self.__lcd.blit(txt, (xpos, ypos+51))
+        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__brighterBlue)
+        self.__lcd.blit(txt, (xpos, ypos+68))
+        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__brighterBlue)
+        self.__lcd.blit(txt, (xpos, ypos+85))
+
+    def clearFlightData(self):
+        pygame.draw.rect(self.__lcd, self.__black, (3,98,144,101))
 
     def refreshDisplay(self):
         pygame.display.update()
