@@ -229,7 +229,7 @@ class Display():
         self.__lcd.blit(txt, (xpos, ypos+85))
 
     def clearFlightData(self):
-        pygame.draw.rect(self.__lcd, self.__black, (3,98,144,101))
+        pygame.draw.rect(self.__lcd, self.__black, (3,98,144,102))
 
     def refreshDisplay(self):
         pygame.display.update()
