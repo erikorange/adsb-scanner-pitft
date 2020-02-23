@@ -49,7 +49,7 @@ class Display():
         self.__medRed = (128,0,0)
         self.__darkPurple=(64,0,64)
         self.__medPurple=(128,0,128)
-        self.__medOrange=(255,120,0)
+        self.__medOrange=(255,129,0)
         self.__darkOrange=(128,60,0)
         self.__white = (255,255,255)
         self.__gray = (128,128,128)
@@ -215,17 +215,17 @@ class Display():
 
         xpos = 3
         ypos = 97
-        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos))
-        txt = self.__fltFont.render("Lat: " + lat, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("Lat: " + lat, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos+17))
-        txt = self.__fltFont.render("Lon:" + lon, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("Lon:" + lon, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos+34))
-        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos+51))
-        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos+68))
-        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__brighterBlue)
+        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__medOrange)
         self.__lcd.blit(txt, (xpos, ypos+85))
 
     def clearFlightData(self):
