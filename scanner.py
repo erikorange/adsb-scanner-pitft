@@ -14,7 +14,7 @@ from filemgr import FileMgr
 
 BUTTON_HOLD = 17
 BUTTON_MIL = 22
-#BUTTON_3 = 23 # configured for shutdown
+BUTTON_OFF = 23 # configured for shutdown
 BUTTON_QUIT = 27
 
 LOG_DIR = 'logs'
@@ -25,6 +25,7 @@ def setupButtonHardware():
     GPIO.setup(BUTTON_HOLD, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BUTTON_MIL, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BUTTON_QUIT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BUTTON_OFF, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def shutdownEvent(signal, frame):
     sys.exit(0)
@@ -286,6 +287,11 @@ for adsbdata in sys.stdin:
         
     if (Util.isButtonPressed(BUTTON_QUIT)):
         fileMgr.closeFile()
+        sys.exit(0)
+
+    if (Util.isButtonPressed(BUTTON_OFF)):
+        fileMgr.closeFile()
+        Util.shutdownSystem()
         sys.exit(0)
 
 print("Exiting main loop")
