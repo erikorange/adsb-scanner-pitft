@@ -28,6 +28,11 @@ class Util:
     def getUptime():
         ut = os.popen('uptime -p').readline()
         return ut.replace("\n","")
+    
+    @staticmethod
+    def shutdownSystem():
+        sd = os.popen('sudo shutdown -h now').readline()
+        return
 
     @staticmethod
     def isMilCallsign(cs):
