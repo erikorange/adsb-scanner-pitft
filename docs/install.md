@@ -13,7 +13,7 @@
 
 ## Install Raspbian
 1.	Download Raspbian Buster lite.
-2.	Format SD card.
+2.	Format SD card.  Use the __SD Memory Card Formatter__ from the SD Association.
 3.	Write the Raspbian image to SD card.
 4.	Enabling wifi: Paste the config below into a file called __wpa_supplicant.conf__. Put your SSID and passphrase into __ssid__ and __psk__, then save the file to the root of the SD card __boot__ volume.
 
@@ -45,7 +45,7 @@
 9.  Log in and update the OS:
     ```
     sudo apt-get update
-    sudo apt-get upgrade --fix-missing
+    sudo apt-get -y upgrade --fix-missing
     sudo reboot
     ```
 
@@ -53,7 +53,7 @@
 ```
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-pitft.sh
 chmod +x adafruit-pitft.sh
-sudo ./adafruit-pitft.sh		[Choose 90 degrees rotation, and yes to boot to console]
+sudo ./adafruit-pitft.sh		[Choose 2.8" 240x320; 90 degrees rotation; yes for console to appear on display; yes to reboot]
 ```
 References:
 
