@@ -296,7 +296,7 @@ class Display():
         milTestT = 3    # milTestMode: F|T
 
         # track current choice in each line item
-        modeIdx = 0
+        modeIdx = 1
         tweetIdx = 0
         remoteIdx = 0
         milTestIdx = 0
