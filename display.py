@@ -215,17 +215,17 @@ class Display():
 
         xpos = 3
         ypos = 97
-        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__medOrange)
+        txt = self.__fltFont.render("Alt: " + altitude, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos))
-        txt = self.__fltFont.render("Lat: " + lat, 1, self.__medOrange)
+        txt = self.__fltFont.render("Lat: " + lat, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos+17))
-        txt = self.__fltFont.render("Lon:" + lon, 1, self.__medOrange)
+        txt = self.__fltFont.render("Lon:" + lon, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos+34))
-        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__medOrange)
+        txt = self.__fltFont.render("VRt: " + verticalRate, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos+51))
-        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__medOrange)
+        txt = self.__fltFont.render("GSp: " + groundSpeed, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos+68))
-        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__medOrange)
+        txt = self.__fltFont.render("Sqk: " + squawk, 1, self.__yellow)
         self.__lcd.blit(txt, (xpos, ypos+85))
 
     def clearFlightData(self):
@@ -296,7 +296,7 @@ class Display():
         milTestT = 3    # milTestMode: F|T
 
         # track current choice in each line item
-        modeIdx = 0
+        modeIdx = 1
         tweetIdx = 0
         remoteIdx = 0
         milTestIdx = 0
@@ -336,12 +336,14 @@ class Display():
             if (elapsedSeconds >= 1):
                 currentSeconds-=1
                 pygame.draw.rect(self.__lcd, self.__black, timeTxt.get_rect(topleft=timeTxtPos))
-                if (currentSeconds <= 3):
-                    timeColor = self.__red
+                if (currentSeconds <= 5):
+                    timeForeColor = self.__yellow
+                    timeBackColor = self.__red
                 else:
-                    timeColor = self.__yellow
+                    timeForeColor = self.__yellow
+                    timeBackColor = self.__black
 
-                timeTxt = self.__optsFont.render(str(currentSeconds), 1, timeColor)
+                timeTxt = self.__optsFont.render(str(currentSeconds), 1, timeForeColor, timeBackColor)
                 self.__lcd.blit(timeTxt, timeTxtPos)
                 self.refreshDisplay()
                 startTime=datetime.datetime.now()

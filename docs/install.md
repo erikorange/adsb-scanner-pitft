@@ -11,11 +11,12 @@
   * Case: https://www.adafruit.com/product/2253
   * Faceplate: https://www.adafruit.com/product/2807
 
-## Install Raspbian
-1.	Download Raspbian Buster lite.
-2.	Format SD card.  Use the __SD Memory Card Formatter__ from the SD Association.
-3.	Write the Raspbian image to SD card.
-4.	Enabling wifi: Paste the config below into a file called __wpa_supplicant.conf__. Put your SSID and passphrase into __ssid__ and __psk__, then save the file to the root of the SD card __boot__ volume.
+## Install Raspberry Pi OS
+1.	Install the __Raspberry Pi Imager__.
+2.  Use the Imager to format the SD card.
+3.  Use the Imager to install __RASPBERRY PI OS LITE__
+4.  On Windows: remove and re-insert the SD card to re-mount it.
+5.	Enabling wifi: Paste the config below into a file called __wpa_supplicant.conf__. Put your SSID and passphrase into __ssid__ and __psk__, then save the file to the root of the SD card __boot__ volume.
 
     *Do not use Notepad or Wordpad which will add CRLFs and cause problems. Use a code editor like Notepad++.*
 
@@ -31,9 +32,10 @@
     ```
 
 5.	Create an empty file named __ssh__ in the root of the SD card __boot__ volume to enable the SSH interface.
-6.	Boot the Pi with the SD card, and locate its IP address using your router.
+6.  Attach the display to the Pi and plug in the USB Software Defined Radio.
+7.	Boot the Pi with the SD card, and locate its IP address using your router.  The display will be white; this is normal and will be fixed later.
 
-## Configure Raspbian
+## Configure Raspberry Pi OS
 1.	SSH into the pi (username: pi, password: raspberry)
 2.	`sudo raspi-config`
 3.	__Change User Password__
@@ -53,8 +55,14 @@
 ```
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-pitft.sh
 chmod +x adafruit-pitft.sh
-sudo ./adafruit-pitft.sh		[Choose 2.8" 240x320; 90 degrees rotation; yes for console to appear on display; yes to reboot]
+sudo ./adafruit-pitft.sh		
 ```
+Then choose these options:
+- 2.8" 240x320
+- 90 degrees rotation
+- yes for console to appear on display
+- yes to reboot
+
 References:
 
 https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi/easy-install-2
@@ -76,8 +84,8 @@ https://discussions.flightaware.com/t/piaware-v-3-7-1-on-debian-10-0-buster-amd6
 ## Install Python packages
 ```
 sudo apt install python3-rpi.gpio
-sudo apt-get install python3-pygame
-sudo apt install python3-pip
+sudo apt-get install -y python3-pygame
+sudo apt install -y python3-pip
 sudo pip3 install twython
 ```
 
@@ -135,4 +143,5 @@ chmod 777 adsb-scanner/*
 sudo reboot
 ```
 
+You're done!  The ads-b scanner will start automatically upon rebooting.
 
