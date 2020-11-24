@@ -37,4 +37,9 @@ class Adsb():
         self.verticalRate = dataVals[16]
         self.squawk = dataVals[17]
 
+    def loadNewCsId(self, adsbRec, adsbCallsign, adsbID):
+        dataVals = adsbRec.split(",")
+        dataVals[4] = adsbID
+        dataVals[10] = adsbCallsign
+        return ",".join(dataVals)
         
