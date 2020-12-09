@@ -37,11 +37,8 @@ def writeADSBHeader(fileMgr):
 def getDateTime(theDate, theTime):
     return theDate.replace("/","") + "-" + theTime[:8].replace(":","")
 
-def writeADSBData(fileMgr, adsb):
-    dataRow = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}"
-    record=dataRow.format(adsb.ICAOid, adsb.theDate, adsb.theTime, adsb.callsign, adsb.altitude,
-                                 adsb.groundSpeed, adsb.track, adsb.lat, adsb.lon, adsb.verticalRate, adsb.squawk)
-    fileMgr.writeToFile(record)
+def writeADSBData(fileMgr, adsbdata):
+    fileMgr.writeToFile(adsbdata)
 
 def writeCallsigns(filename, callsigns):
     theFile = open(filename, "w")
@@ -147,11 +144,11 @@ for adsbdata in sys.stdin:
             csMilfn = os.path.join(logPath, "mil-callsign-" + dt + ".txt")
             adsbfn = os.path.join(logPath, "adsbdata-" + dt + ".txt")
             fileMgr.createFile(adsbfn)
-            writeADSBHeader(fileMgr)
+            #writeADSBHeader(fileMgr)
             firstRow = False
 
         # always log ADSB data and save the current ICAO ID and callsign
-        writeADSBData(fileMgr, adsbObj)
+        writeADSBData(fileMgr, adsbdata.strip())
         adsbCount += 1
         dsp.updateAdsbCount(adsbCount)
         currentID = adsbObj.ICAOid
