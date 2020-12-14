@@ -37,11 +37,8 @@ def writeADSBHeader(fileMgr):
 def getDateTime(theDate, theTime):
     return theDate.replace("/","") + "-" + theTime[:8].replace(":","")
 
-def writeADSBData(fileMgr, adsb):
-    dataRow = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}"
-    record=dataRow.format(adsb.ICAOid, adsb.theDate, adsb.theTime, adsb.callsign, adsb.altitude,
-                                 adsb.groundSpeed, adsb.track, adsb.lat, adsb.lon, adsb.verticalRate, adsb.squawk)
-    fileMgr.writeToFile(record)
+def writeADSBData(fileMgr, adsbdata):
+    fileMgr.writeToFile(adsbdata)
 
 def writeCallsigns(filename, callsigns):
     theFile = open(filename, "w")
@@ -128,15 +125,15 @@ if (tweetMil or tweetLast10CivMil):
 checkAndMakeDir(LOG_DIR)
 
 if (milTestMode):
-    milTestList=('VADER07', 'STING42', 'POLO57', 'STEEL98', 'BISON22', 'RULE71', 'JEEP31', 'RCH285', 'SLAM90', 'FLASH29')
+    milTestList=[('VADER07','A1B1C1'), ('STING42','A2B2C2'), ('POLO57','A3B3C3'),
+                 ('STEEL98','D1E1F1'), ('BISON22','D2E2F2'), ('RULE71','D3E3F3'),
+                 ('JEEP31','A4B4C4'),  ('RCH285','A5B5C5'), ('SLAM90','A6B6C6')]
+
     milTestIdx=0
 
 for adsbdata in sys.stdin:
 
     if adsbObj.isValidRec(adsbdata):
-
-        if (remoteHead):
-            rh.addToQueue(adsbdata)
 
         adsbObj.loadData(adsbdata)
 
@@ -147,24 +144,28 @@ for adsbdata in sys.stdin:
             csMilfn = os.path.join(logPath, "mil-callsign-" + dt + ".txt")
             adsbfn = os.path.join(logPath, "adsbdata-" + dt + ".txt")
             fileMgr.createFile(adsbfn)
-            writeADSBHeader(fileMgr)
+            #writeADSBHeader(fileMgr)
             firstRow = False
 
-        # always log ADSB data and save the current ICAO ID
-        writeADSBData(fileMgr, adsbObj)
+        # always log ADSB data and save the current ICAO ID and callsign
+        writeADSBData(fileMgr, adsbdata.strip())
         adsbCount += 1
         dsp.updateAdsbCount(adsbCount)
         currentID = adsbObj.ICAOid
-
-        # update just the recent callsign display and the logged callsigns if new
         currentCallsign = adsbObj.callsign.strip()
 
+        # adsbObj is used for all data onward, so we can modify adsbdata if needed
         if (milTestMode):
             if (adsbCount % 500 == 0):
-                currentCallsign = milTestList[milTestIdx]
+                currentCallsign = milTestList[milTestIdx][0]
+                currentID = milTestList[milTestIdx][1]
+                adsbdata = adsbObj.loadNewCsId(adsbdata, currentCallsign, currentID)
                 milTestIdx+=1
                 if (milTestIdx == len(milTestList)):
                     milTestIdx=0
+
+        if (remoteHead):
+            rh.addToQueue(adsbdata)
 
 
         if (currentCallsign != ""):
