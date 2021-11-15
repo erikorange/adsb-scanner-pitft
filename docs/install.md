@@ -53,7 +53,7 @@
 
 ## Install Adafruit TFT display drivers
 ```
-wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-pitft.sh
+wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/main/converted_shell_scripts/adafruit-pitft.sh
 chmod +x adafruit-pitft.sh
 sudo ./adafruit-pitft.sh		
 ```
